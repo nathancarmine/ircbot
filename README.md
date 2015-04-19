@@ -14,7 +14,7 @@ We aim to create the framework for a bot that could connect to an irc server (na
 ### System requirements
 Should run on all systems with an internet connection
 ### Group Members
-Nathan Carmine
+Nathan Carmine  
 Connor Carlson
 #### Contributors
 We'll see
