@@ -4,6 +4,7 @@ We aim to create the framework for a bot that could connect to an irc server (na
 * Doing calculations
 * Store quotes from other users
 * Other fun common social media functions (poking/slapping)
+
 ### How to run
 [to be included]
 ### Dependencies
