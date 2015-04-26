@@ -17,6 +17,6 @@ Should run on all systems with an internet connection
 Nathan Carmine  
 Connor Carlson
 #### Contributors
-Tyler Allen
+Tyler Allen from the-tech-tutorial.com
 ### Known bugs
 None yet!
