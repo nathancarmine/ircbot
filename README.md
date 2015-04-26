@@ -17,6 +17,6 @@ Should run on all systems with an internet connection
 Nathan Carmine  
 Connor Carlson
 #### Contributors
-We'll see
+Tyler Allen
 ### Known bugs
 None yet!
