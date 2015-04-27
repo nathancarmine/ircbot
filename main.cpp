@@ -1,17 +1,13 @@
 #include <iostream>
-#include "IrcBot.h"
-//#include "IrcBot.cpp"
-//Needed for VIM^
+#include "IrcBot.cpp"
 
 
 using namespace std;
 
 
-int main()
-{
-	IrcBot bot = IrcBot("NICK NotexactlyReal\r\n","USER guest tolmoon tolsun :Ronnie Reagan\r\n");
+int main() {
+	IrcBot bot = IrcBot("NICK BeedaBoop\r\n","127.0.0.1","#newchan","USER guest word1 word2: user\r\n");
 	bot.start();
 
   return 0;
-
 }
