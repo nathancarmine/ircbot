@@ -333,12 +333,9 @@ void IrcBot::quoteAdd(char *buf){
     string temp_str = strs.str();
     char* char_type = (char*) temp_str.c_str();
 
-    strcpy(data,"PRIVMSG #Botting :Quote Stored Position ");
-    strcat(data,char_type);
-    strcat(data,"\r\n");
-    //strcpy(data,"PRIVMSG #Botting :");
+    privMsg(char_type);
+
     strcpy(hold,buf);
-    strcat(hold,"\r\n");
 
     strs << hold;
     temp_str = strs.str();
@@ -349,11 +346,13 @@ void IrcBot::quoteAdd(char *buf){
     temp->prev = star;
     temp->next = NULL;
     star->value = c;
-    star->word = temp_str.c_str();
+    star->word = temp_str;
     star->next = temp;
 
-    sendData(hold);
-    sendData(data);
+    privMsg(buf);
+    privMsg(data);
+    //sendData(hold);
+    //sendData(data);
 }
 
 void IrcBot::quoteDelete(char *buf){
