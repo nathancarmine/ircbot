@@ -214,7 +214,11 @@ void IrcBot::sendPong(char *buf)
 
 	const char * toSearch = "PING ";
 
+<<<<<<< HEAD
 	for(unsigned int i = 0; i < strlen(buf); i++)
+=======
+	for (unsigned int i = 0; i < strlen(buf);i++)
+>>>>>>> origin/master
 		{
 			//If the active char is equil to the first search item then search toSearch
 			if (buf[i] == toSearch[0])
@@ -234,7 +238,11 @@ void IrcBot::sendPong(char *buf)
 				{
 					int count = 0;
 					//Count the chars
+<<<<<<< HEAD
 					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf); x++)
+=======
+					for (unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+>>>>>>> origin/master
 					{
 						count++;
 					}
@@ -250,7 +258,11 @@ void IrcBot::sendPong(char *buf)
 
 					count = 0;
 					//set the hostname data
+<<<<<<< HEAD
 					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+=======
+					for (unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+>>>>>>> origin/master
 					{
 						returnHost[count+5]=buf[x];
 						count++;
@@ -278,6 +290,7 @@ void IrcBot::botMath(const char *buf) {
 	for(int i=0; i<6; i++)
 		getline(bufstream, num1str, ' ');
 	getline(bufstream, op, ' ');
+<<<<<<< HEAD
 	getline(bufstream, num2str, ' ');
 	int num1 = atoi(num1str.c_str());
 	int num2 = atoi(num2str.c_str());
@@ -421,6 +434,24 @@ void IrcBot::quotePrint(char *buf) {
 void IrcBot::botFramework(const char *buf)
 {	
 	char nickcmd[1000];
+=======
+	getline(bufstream, num2, ' ');
+	char *num1c = new char[num1.size()+1];
+	//char *opc = new char[1];
+	//char *num2c;
+	num1c[num1.size()]=0;
+	memcpy(num1c, num1.c_str(), num1.size());
+	//sendData(
+}
+
+void IrcBot::botFramework(char * buf)
+{
+    /*
+     * TODO: add you code to respod to commands here
+     * the example below replys to the command hi scooby
+     */
+    char nickcmd[1000];
+>>>>>>> origin/master
    	strcpy(nickcmd, nick);
 	char cmd1[1000];
 	strcpy(cmd1, nickcmd);
