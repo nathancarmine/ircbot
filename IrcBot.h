@@ -2,16 +2,10 @@
 #define IRCBOT_H_
 
 #include <string>
-<<<<<<< HEAD
+
 struct node {
     int value;
 	std::string word;
-=======
-
-struct node{
-    int value;
-    std::string word;
->>>>>>> origin/master
     node *next;
     node *prev;
 };
