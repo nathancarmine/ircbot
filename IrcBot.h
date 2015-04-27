@@ -1,9 +1,11 @@
 #ifndef IRCBOT_H_
 #define IRCBOT_H_
 
+#include <string>
+
 struct node{
     int value;
-    const char *word;
+    std::string word;
     node *next;
     node *prev;
 };

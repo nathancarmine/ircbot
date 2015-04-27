@@ -357,25 +357,73 @@ void IrcBot::quoteAdd(char *buf){
 }
 
 void IrcBot::quoteDelete(char *buf){
-    sendData("PRIVMSG #Botting :Deleting function works\r\n");
+    node *star = root;
+    node *temp = root->next;
+    int position;
 
+    for(int i; i<c;i++){
+        stringstream strs;
+        strs << i;
+        string temp_str = strs.str();
+        char* char_type = (char*) temp_str.c_str();
+
+        if(charSearch(buf,char_type) == true){
+            position = i;
+            break;
+        }
+    }
+    while(star->value != position){
+        star = temp;
+        temp = temp->next;
+    }
+    star = star->prev;
+    star->next = temp;
+    temp->prev = star;
+
+    char* char_type = (char*) star->word.c_str();
+    privMsg(char_type);
+
+    stringstream strs;
+    strs << position;
+    string temp_str = strs.str();
+    char_type = (char*) temp_str.c_str();
+    strcat(char_type," Has been deleted.");
+    privMsg(char_type);
+    sendData("PRIVMSG #Botting :Deleting function works\r\n");
 }
 
 void IrcBot::quotePrintAll(char *buf){
     node *star = root;
-    char hold[MAXDATASIZE];
-    while(star->next != NULL){
-        strcpy(hold,"PRIVMSG #Botting :");
-        strcat(hold,star->word);
-        sendData(hold);
+    //char hold[MAXDATASIZE];
+    while(star != NULL){
+        char* char_type = (char*) star->word.c_str();
+        //sendData(star->word);
+        privMsg(char_type);
         sendData("PRIVMSG #Botting :Looping Print Function\r\n");
         star = star->next;
     }
-
-
 }
 
 void IrcBot::quotePrint(char *buf){
+    node *star = root;
+    int position;
+
+    for(int i; i<c;i++){
+        stringstream strs;
+        strs << i;
+        string temp_str = strs.str();
+        char* char_type = (char*) temp_str.c_str();
+
+        if(charSearch(buf,char_type) == true){
+            position = i;
+            break;
+        }
+    }
+    while(star->value != position){
+        star = star->next;
+    }
+    char* char_type = (char*) star->word.c_str();
+    privMsg(char_type);
     sendData("PRIVMSG #Botting :Printing function works\r\n");
 }
 
