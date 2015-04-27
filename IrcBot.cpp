@@ -22,6 +22,8 @@ using namespace std;
 
 IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr)
 {
+    root = new node;
+    root->next = NULL;
 	nick = _nick;
 	server = _server;
 	channel = _channel;
@@ -116,7 +118,7 @@ void IrcBot::start()
 		//buf is the data that is recived
 
 		//Pass buf to the message handeler
-		msgHandel(buf);
+		botFramework(buf);
 
 
 		//If Ping Recived
@@ -204,7 +206,7 @@ bool IrcBot::sendData(const char *msg)
 		return true;
 }
 
-void IrcBot::sendPong(const char *buf)
+void IrcBot::sendPong(char *buf)
 {
 	//Get the reply address
 	//loop through bug and find the location of PING
@@ -212,7 +214,7 @@ void IrcBot::sendPong(const char *buf)
 
 	const char * toSearch = "PING ";
 
-	for (int i = 0; i < strlen(buf);i++)
+	for (unsigned int i = 0; i < strlen(buf);i++)
 		{
 			//If the active char is equil to the first search item then search toSearch
 			if (buf[i] == toSearch[0])
@@ -232,7 +234,7 @@ void IrcBot::sendPong(const char *buf)
 				{
 					int count = 0;
 					//Count the chars
-					for (int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+					for (unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
 					{
 						count++;
 					}
@@ -248,7 +250,7 @@ void IrcBot::sendPong(const char *buf)
 
 					count = 0;
 					//set the hostname data
-					for (int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+					for (unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
 					{
 						returnHost[count+5]=buf[x];
 						count++;
@@ -279,30 +281,102 @@ void IrcBot::botMath(const char *buf) {
 	getline(bufstream, op, ' ');
 	getline(bufstream, num2, ' ');
 	char *num1c = new char[num1.size()+1];
-	char *opc = new char[1];
+	//char *opc = new char[1];
 	//char *num2c;
 	num1c[num1.size()]=0;
 	memcpy(num1c, num1.c_str(), num1.size());
 	//sendData(
 }
 
-void IrcBot::msgHandel(const char *buf)
+void IrcBot::botFramework(char * buf)
 {
-	/*
-	 * TODO: add you code to respod to commands here
-	 * the example below replys to the command hi bot
-	 */
-	char nickcmd[1000];
+    /*
+     * TODO: add you code to respod to commands here
+     * the example below replys to the command hi scooby
+     */
+    char nickcmd[1000];
    	strcpy(nickcmd, nick);
 	char nickcmd1[1000];
 	strcpy(nickcmd1, nickcmd);
-	strcat(nickcmd1, ": Hi bot");
+	strcat(nickcmd1, ": Hello bot");
 	char nickcmd2[1000];
 	strcpy(nickcmd2, nickcmd);
     if(charSearch(buf, nickcmd1))
         privMsg("Hi, how's it going?");
 	else if(charSearch(buf, "Bot: math"))
 		botMath(buf);
+
+    if (charSearch(buf,"Hello bot"))
+    {
+        sendData("PRIVMSG #Botting :Hi, How is it going\r\n");
+    }
+    if (charSearch(buf,".q add")){
+        quoteAdd(buf);
+    }
+    if (charSearch(buf, ".q delete")){
+        quoteDelete(buf);
+    }
+    if (charSearch(buf, ".q print all")){
+        quotePrintAll(buf);
+    }
+}
+
+void IrcBot::quoteAdd(char *buf){
+    char hold[MAXDATASIZE];
+    char data[MAXDATASIZE];
+    node *star = root;
+    node *temp = new node;
+
+    c++;
+    stringstream strs;
+    strs << c;
+    string temp_str = strs.str();
+    char* char_type = (char*) temp_str.c_str();
+
+    strcpy(data,"PRIVMSG #Botting :Quote Stored Position ");
+    strcat(data,char_type);
+    strcat(data,"\r\n");
+    //strcpy(data,"PRIVMSG #Botting :");
+    strcpy(hold,buf);
+    strcat(hold,"\r\n");
+
+    strs << hold;
+    temp_str = strs.str();
+
+    while(star->next != NULL){
+        star = star->next;
+    }
+    temp->prev = star;
+    temp->next = NULL;
+    star->value = c;
+    star->word = temp_str.c_str();
+    star->next = temp;
+
+    sendData(hold);
+    sendData(data);
+}
+
+void IrcBot::quoteDelete(char *buf){
+    sendData("PRIVMSG #Botting :Deleting function works\r\n");
+
+}
+
+void IrcBot::quotePrintAll(char *buf){
+    node *star = root;
+    char hold[MAXDATASIZE];
+    while(star->next != NULL){
+        strcpy(hold,"PRIVMSG #Botting :");
+        strcat(hold,star->word);
+        sendData(hold);
+        sendData("PRIVMSG #Botting :Looping Print Function\r\n");
+        star = star->next;
+    }
+
+
+}
+
+void IrcBot::quotePrint(char *buf){
+    sendData("PRIVMSG #Botting :Printing function works\r\n");
 }
 
 void IrcBot::privMsg(const char *privmsg) {
@@ -314,4 +388,3 @@ void IrcBot::privMsg(const char *privmsg) {
 	puts(msg);
 	sendData(msg);
 }
-
