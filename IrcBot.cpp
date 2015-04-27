@@ -298,7 +298,7 @@ void IrcBot::botFramework(char * buf)
    	strcpy(nickcmd, nick);
 	char nickcmd1[1000];
 	strcpy(nickcmd1, nickcmd);
-	strcat(nickcmd1, ": Hello bot");
+	strcat(nickcmd1, ": Hi bot");
 	char nickcmd2[1000];
 	strcpy(nickcmd2, nickcmd);
     if(charSearch(buf, nickcmd1))
