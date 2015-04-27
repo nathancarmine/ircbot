@@ -22,8 +22,8 @@ using namespace std;
 
 IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr)
 {
-	root = new node;
-	root->next = NULL;
+    root = new node;
+    root->next = NULL;
 	nick = _nick;
 	server = _server;
 	channel = _channel;
@@ -206,7 +206,7 @@ bool IrcBot::sendData(const char *msg)
 		return true;
 }
 
-void IrcBot::sendPong(const char *buf)
+void IrcBot::sendPong(char *buf)
 {
 	//Get the reply address
 	//loop through bug and find the location of PING
@@ -234,7 +234,7 @@ void IrcBot::sendPong(const char *buf)
 				{
 					int count = 0;
 					//Count the chars
-					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf); x++)
 					{
 						count++;
 					}
@@ -432,6 +432,125 @@ void IrcBot::botFramework(const char *buf)
         privMsg("Hi, how's it going?");
 	else if(charSearch(buf, cmd2))
 		botMath(buf);
+
+    if (charSearch(buf,"Hello bot"))
+    {
+        sendData("PRIVMSG #Botting :Hi, How is it going\r\n");
+    }
+    if (charSearch(buf,".q add")){
+        quoteAdd(buf);
+    }
+    if (charSearch(buf, ".q delete")){
+        quoteDelete(buf);
+    }
+    if (charSearch(buf, ".q print all")){
+        quotePrintAll(buf);
+    }
+}
+
+void IrcBot::quoteAdd(char *buf){
+    char hold[MAXDATASIZE];
+    char data[MAXDATASIZE];
+    node *star = root;
+    node *temp = new node;
+
+    c++;
+    stringstream strs;
+    strs << c;
+    string temp_str = strs.str();
+    char* char_type = (char*) temp_str.c_str();
+
+    privMsg(char_type);
+
+    strcpy(hold,buf);
+
+    strs << hold;
+    temp_str = strs.str();
+
+    while(star->next != NULL){
+        star = star->next;
+    }
+    temp->prev = star;
+    temp->next = NULL;
+    star->value = c;
+    star->word = temp_str;
+    star->next = temp;
+
+    privMsg(buf);
+    privMsg(data);
+    //sendData(hold);
+    //sendData(data);
+}
+
+void IrcBot::quoteDelete(char *buf){
+    node *star = root;
+    node *temp = root->next;
+    int position;
+
+    for(int i; i<c;i++){
+        stringstream strs;
+        strs << i;
+        string temp_str = strs.str();
+        char* char_type = (char*) temp_str.c_str();
+
+        if(charSearch(buf,char_type) == true){
+            position = i;
+            break;
+        }
+    }
+    while(star->value != position){
+        star = temp;
+        temp = temp->next;
+    }
+    star = star->prev;
+    star->next = temp;
+    temp->prev = star;
+
+    char* char_type = (char*) star->word.c_str();
+    privMsg(char_type);
+
+    stringstream strs;
+    strs << position;
+    string temp_str = strs.str();
+    char_type = (char*) temp_str.c_str();
+    strcat(char_type," Has been deleted.");
+    privMsg(char_type);
+    sendData("PRIVMSG #Botting :Deleting function works\r\n");
+}
+
+void IrcBot::quotePrintAll(char *buf){
+    node *star = root;
+    //char hold[MAXDATASIZE];
+    while(star != NULL){
+        char* char_type = (char*) star->word.c_str();
+        //sendData(star->word);
+        privMsg(char_type);
+        sendData("PRIVMSG #Botting :Looping Print Function\r\n");
+        star = star->next;
+    }
+}
+
+void IrcBot::quotePrint(char *buf){
+    node *star = root;
+    int position;
+
+    for(int i; i<c;i++){
+        stringstream strs;
+        strs << i;
+        string temp_str = strs.str();
+        char* char_type = (char*) temp_str.c_str();
+
+        if(charSearch(buf,char_type) == true){
+            position = i;
+            break;
+        }
+    }
+    while(star->value != position){
+        star = star->next;
+    }
+    char* char_type = (char*) star->word.c_str();
+    privMsg(char_type);
+    sendData("PRIVMSG #Botting :Printing function works\r\n");
 }
 
 void IrcBot::privMsg(const char *privmsg) {
