@@ -81,14 +81,13 @@ void IrcBot::start()
 	char buf[MAXDATASIZE];
 
 	int count = 0;
+	char sendnick[1000] = {"NICK "};
+	strcat(sendnick, nick);
+	strcat(sendnick, "\r\n");
 	char joinchan[1000] = {"JOIN "};
-	const char *joinchan2 = new char[1000];
-	//strcpy(joinchan, "JOIN ");
 	strcat(joinchan, channel);
 	strcat(joinchan, "\r\n");
 	puts(joinchan);
-	//joinchan2 = &joinchan;
-	//const char *joinchan2 = &joinchan;
 	while (1)
 	{
 		//declars
@@ -97,7 +96,7 @@ void IrcBot::start()
 		switch (count) {
 			case 3:
 					//after 3 recives send data to server (as per IRC protacol)
-					sendData(nick);
+					sendData(sendnick);
 					sendData(usr);
 				break;
 			case 4:
@@ -293,8 +292,26 @@ void IrcBot::msgHandel(const char *buf)
 	 * TODO: add you code to respod to commands here
 	 * the example below replys to the command hi bot
 	 */
-    if(charSearch(buf,"Bot: Hi bot"))
-        sendData("PRIVMSG #newchan :hi, hows it going\r\n");
+	char nickcmd[1000];
+   	strcpy(nickcmd, nick);
+	char nickcmd1[1000];
+	strcpy(nickcmd1, nickcmd);
+	strcat(nickcmd1, ": Hi bot");
+	char nickcmd2[1000];
+	strcpy(nickcmd2, nickcmd);
+    if(charSearch(buf, nickcmd1))
+        privMsg("Hi, how's it going?");
 	else if(charSearch(buf, "Bot: math"))
 		botMath(buf);
 }
+
+void IrcBot::privMsg(const char *privmsg) {
+	char msg[1000] = {"PRIVMSG "};
+	strcat(msg, channel);
+	strcat(msg, " :");
+	strcat(msg, privmsg);
+	strcat(msg, "\r\n");
+	puts(msg);
+	sendData(msg);
+}
+
