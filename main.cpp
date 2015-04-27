@@ -1,6 +1,7 @@
 #include <iostream>
-#include "IrcBot.cpp"
-
+//#include "IrcBot.cpp"
+#include "IrcBot.h"
+#include <stdlib.h>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ int main(int argc, const char* argv[]) {
 	IrcBot bot = IrcBot(argv[1], argv[2], argv[3], "USER guest word1 word2: user\r\n");
 
 	bot.start();
-	
+
 
   return 0;
 }
