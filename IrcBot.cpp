@@ -20,31 +20,74 @@
 
 using namespace std;
 
-#define MAXDATASIZE 100
+#define MAXDATASIZE 1000
 
-
+/**************************************************************************************************
+ * Function Prototype:                                                                            *
+ * IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr) *
+ *                                                                                                *
+ * Function Description:                                                                          *
+ * This function is the constructor and initializes starting variables                            *
+ *                                                                                                *
+ * Precondition:                                                                                  *
+ * Program must be called to run                                                                  *
+ *                                                                                                *
+ * Postcondition:                                                                                 *
+ * Initializes stuff that is needed to run the program                                            *
+ **************************************************************************************************/
 IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr)
 {
 	root = new node;
 	root->next = NULL;
+
+	point = new affe;
+    point->next = NULL;
+    point->affeLvl = 0;
+    point->name = "User1";
+
 	nick = _nick;
 	server = _server;
 	channel = _channel;
 	usr = _usr;
 }
-
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::~IrcBot();                                                            *
+ *                                                                               *
+ * Function Description:                                                         *
+ * Deconstructs program                                                          *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Program must be previously running                                            *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Program quits out                                                             *
+ ********************************************************************************/
 IrcBot::~IrcBot()
 {
 	close (s);
 }
-
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::start();                                                              *
+ *                                                                               *
+ * Function Description:                                                         *
+ * Starts running the program makes calls to the server connects to the server,  *
+ * replies to server requests, takes in message data, basically starts the bot   *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Called from main                                                              *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Connects to server and waits for responses                                    *
+ ********************************************************************************/
 void IrcBot::start()
 {
 	struct addrinfo hints, *servinfo;
 
 	//Setup run with no errors
 	setup = true;
-
+    //This is the port number it connects to the server from
 	port = "6667";
 
 	//Ensure that servinfo is clear
@@ -144,10 +187,21 @@ void IrcBot::start()
 		}
 	}
 }
-
-
-bool IrcBot::charSearch(const char *toSearch, const char *searchFor)
-{
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::charSearch(const char *toSearch,const char *searchFor);                                                 *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This is a char search function that compares each position in the char string *
+ * to each position in another char string.                                      *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Must be called by another function with two chars in the parameter            *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Returns true if a match is found and false if a match is not found            *
+ ********************************************************************************/
+bool IrcBot::charSearch(const char *toSearch, const char *searchFor){
 	int len = strlen(toSearch);
 	int forLen = strlen(searchFor); // The length of the searchfor field
 
@@ -175,18 +229,42 @@ bool IrcBot::charSearch(const char *toSearch, const char *searchFor)
 
 	return 0;
 }
-
-bool IrcBot::isConnected(const char *buf)
-{//returns true if "/MOTD" is found in the input strin
-	//If we find /MOTD then its ok join a channel
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::isConnected(char *buf);                                               *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This is checking if the bot gets connected to the server                      *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Function must be called to check if the message of the day (MOTF) is found    *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Returns true or false depending on if the MOTF is found                       *
+ ********************************************************************************/
+bool IrcBot::isConnected(const char *buf){
+    //returns true if "/MOTD" is found in the input strin
+	//If /MOTD is found then its ok join a channel
 	if (charSearch(buf,"/MOTD") == true)
 		return true;
 	else
 		return false;
 }
-
-const char * IrcBot::timeNow()
-{//returns the current date and time
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::timeNow();                                                            *
+ *                                                                               *
+ * Function Description:                                                         *
+ * Returns the current time and date                                             *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on the server gets time checked when ping is called       *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Returns the current time and date                                             *
+ ********************************************************************************/
+const char * IrcBot::timeNow(){
+    //returns the current date and time
 	time_t rawtime;
 	struct tm * timeinfo;
 
@@ -195,10 +273,20 @@ const char * IrcBot::timeNow()
 
 	return asctime (timeinfo);
 }
-
-
-bool IrcBot::sendData(const char *msg)
-{//Send some data
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::sendData(const char *msg);                                            *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function sends the message back to the channel that the bot is in        *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Must be called by another function sending data back to the channel           *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * A message will have now been sent to the IRC channel                          *
+ ********************************************************************************/
+bool IrcBot::sendData(const char *msg){
 	//Send some data
 	int len = strlen(msg);
 	int bytes_sent = send(s,msg,len,0);
@@ -208,8 +296,20 @@ bool IrcBot::sendData(const char *msg)
 	else
 		return true;
 }
-
-void IrcBot::sendPong(const char *buf)
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::sendPong(char *buf);                                                  *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function responds to the pings that the IRC server requests              *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be connected to the server                                           *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Will send another ping response that will be called pong because why not      *
+ ********************************************************************************/
+void IrcBot::sendPong(char *buf)
 {
 	//Get the reply address
 	//loop through bug and find the location of PING
@@ -294,7 +394,7 @@ void IrcBot::botHypot(const char *buf) {
 		stringstream resultStream;
 		resultStream << result;
 		string resultStr = resultStream.str();
-		char msg[1000];
+		char msg[MAXDATASIZE];
 		strcpy(msg, "hypot(");
 		strcat(msg, num1str.c_str());
 		strcat(msg, ", ");
@@ -334,7 +434,7 @@ void IrcBot::botRoot(const char *buf) {
 			stringstream resultStream;
 			resultStream << result;
 			string resultStr = resultStream.str();
-			char msg[1000];
+			char msg[MAXDATASIZE];
 			strcpy(msg, rootype.c_str());
 			strcat(msg, "(");
 			strcat(msg, numStr.c_str());
@@ -359,7 +459,7 @@ void IrcBot::botMath(const char *buf) {
 	getline(bufstream, op, ' ');
 	getline(bufstream, num2str, ' ');
 	num2str.erase(remove(num2str.begin(), num2str.end(), '\r'), num2str.end());
-	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());	
+	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());
 	float result = 0;
 	bool sendresult = 1;
 	if((!isdigit(num1str[0]) && num1str[0] != '.' && num1str[0] != '-' ) ||
@@ -406,7 +506,7 @@ void IrcBot::botMath(const char *buf) {
 		stringstream resultStream;
 		resultStream << result;
 		string resultStr = resultStream.str();
-		char msg[1000];
+		char msg[MAXDATASIZE];
 		strcpy(msg, num1str.c_str());
 		strcat(msg, op.c_str());
 		strcat(msg, num2str.c_str());
@@ -416,60 +516,104 @@ void IrcBot::botMath(const char *buf) {
 		privMsg(msg);
 	}
 }
-
-void IrcBot::quoteAdd(char *buf) {
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::quoteAdd(char *buf);                                                  *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will add a user defined phrase in the IRC channel to a linked   *
+ * list. The function is called when .q add is found in the users message.       *
+ *                                                                               *
+ * Example:                                                                      *
+ * .q add I want to add this quote!                                              *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message                     *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * A quote is now added to the linked list at the last position available        *
+ ********************************************************************************/
+void IrcBot::quoteAdd(char *buf){
     char hold[MAXDATASIZE];
     char data[MAXDATASIZE];
     node *star = root;
     node *temp = new node;
-
-    c++; //heh
+    //Converts to char
+    c++;
     stringstream strs;
     strs << c;
     string temp_str = strs.str();
-    const char *char_type = temp_str.c_str();
-
+    char* char_type = (char*) temp_str.c_str();
+    //Sends to privMsg to be modified the correct way and then gets sent back to the chatroom
     privMsg(char_type);
-
-    strcpy(hold, buf);
+    //Copies one char string to another char string
+    strcpy(hold,buf);
 
     strs << hold;
     temp_str = strs.str();
-	const char *char_type2 = temp_str.c_str();
 
-
-    while(star->next != NULL) {
+    //Looks for next open instance
+    while(star->next != NULL){
         star = star->next;
     }
     temp->prev = star;
     temp->next = NULL;
     star->value = c;
-    star->word = char_type2;
+    star->word = temp_str;
     star->next = temp;
 
     privMsg(buf);
     privMsg(data);
-    //sendData(hold);
-    //sendData(data);
 }
-
-void IrcBot::quoteDelete(char *buf) {
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::quoteDelete(char *buf);                                               *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will delete a previously saved user quote from the linked list. *
+ * The function is called when .q delete (number) is found in the users message. *
+ *                                                                               *
+ * Example:                                                                      *
+ * .q delete 1                                                                   *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message and a quote must    *
+ * have already been added to the linked list                                    *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * The quote will be deleted at whatever value it was placed in at               *
+ ********************************************************************************/
+void IrcBot::quoteDelete(char *buf){
     node *star = root;
     node *temp = root->next;
+    char message[MAXDATASIZE];
     int position;
-
-    for(int i; i<c;i++){
+    //Checks if there is even quotes in the linked list
+    if(star->next == NULL){
+        strcpy(message,"No quotes have been entered yet");
+        privMsg(message);
+        return;
+    }
+    //Checking for the quote value to be deleted
+    for(int i = 0; i<c;i++){
+        //Converting value to char for comparison
         stringstream strs;
         strs << i;
         string temp_str = strs.str();
         char* char_type = (char*) temp_str.c_str();
 
-        if(charSearch(buf,char_type) == true) {
+        if(charSearch(buf,char_type) == true){
             position = i;
             break;
+            //If found breaks out
+        }else{
+            strcpy(message,"There was no quote at that number.");
+            privMsg(message);
+            return;
+            //If not found returns out of function and posts message
         }
     }
-    while(star->value != position) {
+    while(star->value != position){
         star = temp;
         temp = temp->next;
     }
@@ -477,36 +621,82 @@ void IrcBot::quoteDelete(char *buf) {
     star->next = temp;
     temp->prev = star;
 
-    const char *char_type = star->word.c_str();
+    char* char_type = (char*) star->word.c_str();
     privMsg(char_type);
 
     stringstream strs;
     strs << position;
     string temp_str = strs.str();
-    char char_type2[1000];
-	strcpy(char_type2, temp_str.c_str());
-    strcat(char_type2, " has been deleted.");
-    privMsg(char_type2);
-    sendData("PRIVMSG #Botting :Deleting function works\r\n");
+    char_type = (char*) temp_str.c_str();
+    strcat(char_type," Has been deleted.");
+    privMsg(char_type);
+    //sendData("PRIVMSG #Botting :Deleting function works\r\n");
 }
-
-void IrcBot::quotePrintAll(char *buf) {
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::quotePrintAll(char *buf);                                             *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will print all the stored quotes that are in the linked list    *
+ * The function is called when .q printall is found in the users message.        *
+ *                                                                               *
+ * Example:                                                                      *
+ * .q printall                                                                   *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message and a quote must    *
+ * have already been added to the linked list                                    *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * All the quotes stored in the link list will be printed on screen              *
+ ********************************************************************************/
+void IrcBot::quotePrintAll(char *buf){
     node *star = root;
-    //char hold[MAXDATASIZE];
+    char message[MAXDATASIZE];
+    //Checks if a quote has been added
+    if(star->next == NULL){
+        strcpy(message,"No quotes have been entered yet");
+        privMsg(message);
+        return;
+    }
+    //Loops through linked list and prints all quotes
     while(star != NULL){
         char* char_type = (char*) star->word.c_str();
-        //sendData(star->word);
         privMsg(char_type);
-        sendData("PRIVMSG #Botting :Looping Print Function\r\n");
         star = star->next;
     }
 }
-
-void IrcBot::quotePrint(char *buf) {
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::quotePrint(char *buf);                                                *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will print a previously saved user quote from the linked list.  *
+ * The function is called when .q print (number) is found in the users message.  *
+ *                                                                               *
+ * Example:                                                                      *
+ * .q print 1                                                                    *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message and a quote must    *
+ * have already been added to the linked list                                    *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * A quote will be printed on screen                                             *
+ ********************************************************************************/
+void IrcBot::quotePrint(char *buf){
     node *star = root;
     int position;
-
+    char message[MAXDATASIZE];
+    //Checks if quotes have been added
+    if(star->next == NULL){
+        strcpy(message,"No quotes have been entered yet");
+        privMsg(message);
+        return;
+    }
+    //Searches for specific quote number
     for(int i; i<c;i++){
+        //Conversion to char for charSearch function
         stringstream strs;
         strs << i;
         string temp_str = strs.str();
@@ -517,34 +707,263 @@ void IrcBot::quotePrint(char *buf) {
             break;
         }
     }
-    while(star->value != position) {
+    //Loops until the correct quote value is found
+    while(star->value != position){
         star = star->next;
     }
     char* char_type = (char*) star->word.c_str();
     privMsg(char_type);
-    sendData("PRIVMSG #Botting :Printing function works\r\n");
+    //sendData("PRIVMSG #Botting :Printing function works\r\n");
 }
-
-void IrcBot::botFramework(const char *buf)
-{	
-	char nickcmd[1000];
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::affectionDis(char *buf);                                              *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will print User1's affection level. This function only works for*
+ * User1. The function is called !Affection User1 is sent in a user message      *
+ *                                                                               *
+ * Example:                                                                      *
+ * !Affection User1                                                              *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message                     *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * User1 affection level will be posted in the channel                           *
+ ********************************************************************************/
+void IrcBot::affectionDis(char *buf){
+    affe *user = point;
+    char witty[MAXDATASIZE];
+    //Tells you the bots affection level
+    if(charSearch(buf, "User1")){
+        char* char_type = (char*) user->name.c_str();
+        if(user->affeLvl <= -40){
+            strcpy(witty,"Get out of my sight. Never send me a message again.");
+            privMsg(witty);
+        }else if(user->affeLvl > -40 && user->affeLvl < -15){
+            strcpy(witty,"If you continue on this path...");
+            privMsg(witty);
+        }else if(user->affeLvl >= -15 && user->affeLvl <= 15){
+            strcpy(witty,"Acquaintances are not so bad.");
+            privMsg(witty);
+        }else if(user->affeLvl > 15 && user->affeLvl < 40){
+            strcpy(witty,"If you continue on this path... <3");
+            privMsg(witty);
+        }else{
+            strcpy(witty,"I wuv you! <3 <3 <3");
+            privMsg(witty);
+        }
+        //strcat adds a char string to another char string
+        strcat(char_type," Is Your Affection Level");
+        privMsg(char_type);
+    }
+}
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::affectionCom(char *buf);                                              *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function will print a previously saved user quote from the linked list.  *
+ * Follow the examples bellow to call this function                              *
+ *                                                                               *
+ * Example:                                                                      *
+ * !Hit,!Poke,!Play,!Pet,!Mean,!Love                                             *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message                     *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * A response will be given and User1 affection level will change                *
+ ********************************************************************************/
+void IrcBot::affectionCom(char *buf){
+    affe *user = point;
+    int randomNum;
+    char witty[MAXDATASIZE];
+    //If statements for when a certain command is given to the bot this
+    //this isn't hard stuff you can figure it out
+    if (charSearch(buf, "!Hit")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<20){
+            user->affeLvl += -2;
+            strcpy(witty,"Why are you hitting me?");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }else if(randomNum>95){
+            user->affeLvl += 5;
+            strcpy(witty,"Mmmm that felt good");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl = 50;
+            }
+        }else{
+            user->affeLvl += -4;
+            strcpy(witty,"Want me to smack you see how that feels");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }
+    }
+    if (charSearch(buf, "!Pet")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<50){
+            user->affeLvl += 0;
+            strcpy(witty,"What are you even touching?");
+            privMsg(witty);
+        }else if(randomNum>75){
+            user->affeLvl += 2;
+            strcpy(witty,"That feels wonderful");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl += 50;
+            }
+        }else{
+            user->affeLvl += -1;
+            strcpy(witty,"Creep");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }
+    }
+    if (charSearch(buf, "!Play")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<80){
+            user->affeLvl += 0;
+            strcpy(witty,"We're not getting anywhere here");
+            privMsg(witty);
+        }else if(randomNum>95){
+            user->affeLvl += 3;
+            strcpy(witty,"Watching you type that was oddly pleasing");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl = 50;
+            }
+        }else{
+            user->affeLvl += -2;
+            strcpy(witty,"That was just sad");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }
+    }
+    if (charSearch(buf, "!Poke")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<20){
+            user->affeLvl += -2;
+            strcpy(witty,"Where are you touching?");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }else if(randomNum>80){
+            user->affeLvl += 2;
+            strcpy(witty,"Where are you touching?");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl = 50;
+            }
+        }else{
+            user->affeLvl = 0;
+            strcpy(witty,"Bored");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }
+    }
+    if (charSearch(buf, "!Mean")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<40){
+            user->affeLvl += -5;
+            strcpy(witty,"You're a...");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }else if(randomNum>98){
+            user->affeLvl += 8;
+            strcpy(witty,"I want you more now");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl = 50;
+            }
+        }else{
+            user->affeLvl += -3;
+            strcpy(witty,"Why are you like this to me?");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }
+    }
+    if (charSearch(buf, "!Love")){
+        randomNum = rand() % 100 + 1;
+        if(randomNum<60){
+            user->affeLvl += -4;
+            strcpy(witty,"You're creeping me out.");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }else if(randomNum>65){
+            user->affeLvl += -6;
+            strcpy(witty,"You're creeping me out even more.");
+            privMsg(witty);
+            if(user->affeLvl <= -50){
+                user->affeLvl = -50;
+            }
+        }else{
+            user->affeLvl += 1;
+            strcpy(witty,"Awwww your sorta cute in a weird, creepy way.");
+            privMsg(witty);
+            if(user->affeLvl >= 50){
+                user->affeLvl = 50;
+            }
+        }
+    }
+    strcpy(witty,"User1");
+    affectionDis(witty);
+}
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::botFramework(char *buf);                                              *
+ *                                                                               *
+ * Function Description:                                                         *
+ * When a message is received by the bot it gets sent to this function which then*
+ * checks through the if statements and sends the message data to the correct    *
+ * function. If it doesn't match any functions nothing happens.                  *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on a server user must enter a message                     *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * A function will be called or not depending on what the message said           *
+ ********************************************************************************/
+void IrcBot::botFramework(char *buf)
+{
+	char nickcmd[MAXDATASIZE];
    	strcpy(nickcmd, nick);
-	char cmd1[1000];
+	char cmd1[MAXDATASIZE];
 	strcpy(cmd1, nickcmd);
 	strcat(cmd1, ": Hi bot");
-	char cmd1_2[1000];
+	char cmd1_2[MAXDATASIZE];
 	strcpy(cmd1_2, nickcmd);
 	strcat(cmd1_2, ": Senpaiii!!~");
-	char cmd2[1000];
+	char cmd2[MAXDATASIZE];
 	strcpy(cmd2, nickcmd);
 	strcat(cmd2, ": math");
-	char cmd3_1[1000];
+	char cmd3_1[MAXDATASIZE];
 	strcpy(cmd3_1, nickcmd);
 	strcat(cmd3_1, ": sqrt");
-	char cmd3_2[1000];
+	char cmd3_2[MAXDATASIZE];
 	strcpy(cmd3_2, nickcmd);
 	strcat(cmd3_2, ": cbrt");
-	char cmd4[1000];
+	char cmd4[MAXDATASIZE];
 	strcpy(cmd4, nickcmd);
 	strcat(cmd4, ": hypot");
 
@@ -557,10 +976,45 @@ void IrcBot::botFramework(const char *buf)
 	else if(charSearch(buf, cmd4))
 		botHypot(buf);
 
+    if (charSearch(buf,".q add")){
+        quoteAdd(buf);
+    }
+    if (charSearch(buf, ".q delete")){
+        quoteDelete(buf);
+    }
+    if (charSearch(buf, ".q printall")){
+        quotePrintAll(buf);
+    }
+    if (charSearch(buf, ".q print")){
+        quotePrintAll(buf);
+    }
+    //Not sure how to retrieve usernames to keep track of by the bot
+    if (charSearch(buf, "!Affection")){
+        affectionDis(buf);
+    }
+    if ( (charSearch(buf, "!Hit bot")) || (charSearch(buf, "!Pet bot")) || (charSearch(buf, "!Poke bot")) || (charSearch(buf, "!Play bot")) || (charSearch(buf, "!Mean bot")) || (charSearch(buf, "!Love bot")) ){
+        affectionCom(buf);
+    }
 }
-
+/*********************************************************************************
+ * Function Prototype:                                                           *
+ * IrcBot::privMsg(const char *privmsg);                                         *
+ *                                                                               *
+ * Function Description:                                                         *
+ * This function allows the bot to be connected to different channels without    *
+ * having to hardcode the information.                                           *
+ *                                                                               *
+ * Example:                                                                      *
+ * Takes in command arguements to easily print out message to IRC Bot            *
+ *                                                                               *
+ * Precondition:                                                                 *
+ * Bot must be running on the server and function must be called                 *
+ *                                                                               *
+ * Postcondition:                                                                *
+ * Easily compiles the message to be sent to sendData                            *
+ ********************************************************************************/
 void IrcBot::privMsg(const char *privmsg) {
-	char msg[1000] = {"PRIVMSG "};
+	char msg[MAXDATASIZE] = {"PRIVMSG "};
 	strcat(msg, channel);
 	strcat(msg, " :");
 	strcat(msg, privmsg);
