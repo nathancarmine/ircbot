@@ -99,7 +99,7 @@ void IrcBot::start()
 
 	//Setup the structs if error print why
 	int res;
-	if ((res = getaddrinfo(server/*"127.0.0.1""irc.freenode.net"*/,port,&hints,&servinfo)) != 0)
+	if ((res = getaddrinfo(server,port,&hints,&servinfo)) != 0)
 	{
 		setup = false;
 		fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(res));
@@ -158,7 +158,7 @@ void IrcBot::start()
 
 
 		//Recv & print Data
-		numbytes = recv(s,buf,MAXDATASIZE-1,0);
+		numbytes = recv(s,buf,100-1,0);
 		buf[numbytes]='\0';
 		cout << buf;
 		//buf is the data that is recived
@@ -234,7 +234,7 @@ bool IrcBot::charSearch(const char *toSearch, const char *searchFor)
 
 /*********************************************************************************
  * Function Prototype:                                                           *
- * IrcBot::charSearch(const char *toSearch,const char *searchFor);                                                 *
+ * IrcBot::charSearch(const char *toSearch,const char *searchFor);               *
  *                                                                               *
  * Function Description:                                                         *
  * This is a char search function that compares each position in the char string *
@@ -416,7 +416,7 @@ void IrcBot::botHelp() {
 
 /*********************************************************************************
  * Function Prototype:                                                           *
- * IrcBot::botTrig(cont char *buf);                                               *
+ * IrcBot::botTrig(cont char *buf);                                              *
  *                                                                               *
  * Function Description:                                                         *
  * Does basic trigonometric functions (sin, cos, tan, asin, acos, atan)          *
@@ -447,7 +447,7 @@ void IrcBot::botTrig(const char *buf) {
 	degStr.erase(remove(degStr.begin(), degStr.end(), '\r'), degStr.end());
 	degStr.erase(remove(degStr.begin(), degStr.end(), '\n'), degStr.end());
 	if(degStr == "deg" || degStr == "d") deg = 1;
-	if(!isdigit(numStr[0]) && numStr[0] != '.' && numStr[0] != '-' && numStr[0] != 'p'
+	if((!isdigit(numStr[0]) && numStr[0] != '.' && numStr[0] != '-')
 			&& !charSearch(numStr.c_str(), "pi")) {
 			privMsg("Function Trig: [function] [number] [deg]");
 			privMsg("Ex: cos 2pi   Ex: sin 90 deg");
@@ -475,20 +475,20 @@ void IrcBot::botTrig(const char *buf) {
 			result = cos(num);
 		else if(trigfunct == "tan")
 			result = tan(num);
-		if(trigfunct == "asin")
+		else if(trigfunct == "asin")
 			result = asin(num);
 		else if(trigfunct == "acos")
 			result = acos(num);
 		else if(trigfunct == "atan")
 			result = atan(num);
-		/*else {
+		else {
 			privMsg("Function Trig: [function] [number] [deg]");
 			privMsg("Ex: cos 2pi   Ex: sin 90 deg");
 			privMsg("Supported functions: sin, cos, tan, asin, acos, atan");
 			cont = 0;
-		}*/
+		}
 		if(cont) {
-			if(result < .000001 && result > -.000001)
+			if(result < .0001 && result > -.0001)
 				result = round(result);
 			if(result == -0)
 				result = 0;
@@ -1252,6 +1252,15 @@ void IrcBot::botFramework(const char *buf)
 	char cmd5_3[MAXDATASIZE];
 	strcpy(cmd5_3, nickcmd);
 	strcat(cmd5_3, ": tan");
+	char cmd5_4[MAXDATASIZE];
+	strcpy(cmd5_4, nickcmd);
+	strcat(cmd5_4, ": asin");
+	char cmd5_5[MAXDATASIZE];
+	strcpy(cmd5_5, nickcmd);
+	strcat(cmd5_5, ": acos");
+	char cmd5_6[MAXDATASIZE];
+	strcpy(cmd5_6, nickcmd);
+	strcat(cmd5_6, ": atan");
 	char cmd6[MAXDATASIZE];
 	strcpy(cmd6, nickcmd);
 	strcat(cmd6, ": QuadForm");
@@ -1301,7 +1310,8 @@ void IrcBot::botFramework(const char *buf)
 		botRoot(buf);
 	else if(charSearch(buf, cmd4))
 		botHypot(buf);
-	else if(charSearch(buf, cmd5_1) || charSearch(buf, cmd5_2) || charSearch(buf, cmd5_3))
+	else if(charSearch(buf, cmd5_1) || charSearch(buf, cmd5_2) || charSearch(buf, cmd5_3)
+		|| charSearch(buf, cmd5_4) || charSearch(buf, cmd5_5) || charSearch(buf, cmd5_6))
 		botTrig(buf);
 	else if(charSearch(buf, cmd6))
 		botQuadForm(buf);
