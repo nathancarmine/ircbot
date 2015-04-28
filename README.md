@@ -8,11 +8,16 @@ We aim to create the framework for a bot that could connect to an irc server and
 
 ### How to run
 We recommend using g++ to compile the code:  
-`g++ main.cpp -o IrcBot`
+`g++ main.cpp -o IrcBot`  
+If you do not have g++ installed:  
+`sudo apt-get install g++`
 
 With your IRC client connected to an IRC server create a new channel. Run the program with three command line arguments, first will be the bots nickname, second will be the server address and the channel will be entered last with quotes around the channel name. So [nickname] [server address] [channel] for example the local server would look something like this:  
 `./IrcBot Botty 127.0.0.1 "#Botting"`  
 Be sure to use quotes around the channel name. The bot should then join the channel on the server with the nickname you gave it. After it joins there are some [message triggers](https://github.com/nathancarmine/ircbot/wiki/IRC-Bot-Response-Triggers) the bot is looking for before it will reply.
+
+When rebooting the bot, first stop it by pressing ctrl-z. Be sure to **terminate** it before running it again (even if you recompiled). Otherwise, a name conflict error will occur. To terminate it, you must kill the process. You may have to kill the process more than once to terminate it, as the first time may only stop the process. To kill a process, type `kill %[job_number]`. For instance, if the bot is the first process, type `kill %1`. This is roughly how this should look.
+![TERMINATE_ALL_ROBOTS](http://i.imgur.com/f8esBgL.png)
 
 ### Dependencies
 A connection to an IRC server is required. We recommend that you do not connect to a server on the internet as this bot might get you banned on one of those servers. Instead use a local server connection. We suggest that you install ircd-hybrid to use as your local server. [Here](https://github.com/nathancarmine/ircbot/wiki/How-to-install-a-local-server) is a quick installation guide for linux.  
