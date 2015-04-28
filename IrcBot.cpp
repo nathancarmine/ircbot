@@ -285,13 +285,13 @@ void IrcBot::botRoot(const char *buf) {
 	float result = 0;
 	if(!isdigit(numStr[0]) && numStr[0] != '.')
 		if(numStr[0] == '-')
-			privMsg("Nice try, but negative square roots are merely a Fig Newton of your imaginary number.");
+			privMsg("Nice try, but negative roots are merely a Fig Newton of your imaginary number.");
 		else
 			privMsg("Function sqrt: [sqrt/cbrt] [number] Ex: sqrt 4");
 	else {
 		float num = atof(numStr.c_str());
 		if(num < 0)
-			privMsg("Nice try, but negative square roots are merely a Fig Newton of your imaginary number.");
+			privMsg("Nice try, but negative roots are merely a Fig Newton of your imaginary number.");
 		else if (rootype == "sqrt" || rootype == "cbrt") {
 			if(rootype == "sqrt")
 				result = sqrt(num);
