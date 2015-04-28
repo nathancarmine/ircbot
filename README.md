@@ -11,27 +11,27 @@ With your IRC client connected to an IRC server create a new channel. Run the pr
 
 ### Dependencies
 A connection to an IRC server is required. We recommend that you do not connect to a server on the internet as this bot might get you banned on one of those servers. Instead use a local server connection. We suggest that you install ircd-hybrid to use as your local server. Here is a quick installation guide for linux.
-An IRC client version is required as well for communication with the bot. If you don't know what an IRC client is then here's an installation link for Irssi. If you want to use your own IRC client make sure it can create new channels, since the bot will be joining you in that channel.
-The rest of our dependencies are:
-*\#include "IrcBot.h"  
-*\#include \<iostream>  
-*\#include \<stdio.h>  
-*\#include \<stdlib.h>  
-*\#include \<sstream>  
-*\#include \<math.h>  
-*\#include \<algorithm>  
-*\#include \<unistd.h>  
-*\#include \<errno.h>  
-*\#include \<string>  
-*\#include \<string.h>  
-*\#include \<sys/types.h>  
-*\#include \<sys/socket.h>  
-*\#include \<netinet/in.h>  
-*\#include \<netdb.h>  
-*\#include \<arpa/inet.h>  
-*\#include \<sys/wait.h>  
-*\#include \<signal.h>  
-*\#include \<time.h>  
+An IRC client version is required as well for communication with the bot. If you don't know what an IRC client is then here's an installation link for Irssi. If you want to use your own IRC client make sure it can create new channels, since the bot will be joining you in that channel.  
+The rest of our dependencies are:  
+* \#include "IrcBot.h"  
+* \#include \<iostream>  
+* \#include \<stdio.h>  
+* \#include \<stdlib.h>  
+* \#include \<sstream>  
+* \#include \<math.h>  
+* \#include \<algorithm>  
+* \#include \<unistd.h>  
+* \#include \<errno.h>  
+* \#include \<string>  
+* \#include \<string.h>  
+* \#include \<sys/types.h>  
+* \#include \<sys/socket.h>  
+* \#include \<netinet/in.h>  
+* \#include \<netdb.h>  
+* \#include \<arpa/inet.h>  
+* \#include \<sys/wait.h>  
+* \#include \<signal.h>  
+* \#include \<time.h>  
 
 ### System requirements
 Tested only on Ubuntu 14.04, will probably work on other distros. May work on OS X with the proper IRC applications installed. 
