@@ -282,8 +282,8 @@ void IrcBot::botHypot(const char *buf) {
 	getline(bufstream, num2str, ' ');
 	num2str.erase(remove(num2str.begin(), num2str.end(), '\r'), num2str.end());
 	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());
-	if((!isdigit(num1str[0]) && num1str[0] != '.' && num1str[0] != '-' ) ||
-		(!isdigit(num2str[0]) && num2str[0] != '.' && num2str[0] != '-')) {
+	if((!isdigit(num1str[0]) && num1str[0] != '.') || num1str[0] == '-'  ||
+		(!isdigit(num2str[0]) && num2str[0] != '.') || num2str[0] == '-') {
 		privMsg("Function Hypot: hypot [num1] [num2] Ex: hypot 3 4");
 		if(num1str[0] == '-' || num2str[0] == '-')
 			privMsg("Nice try, but the side of a triangle cannot be negative.");
