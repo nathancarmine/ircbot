@@ -41,5 +41,8 @@ Connor Carlson
 #### Contributors
 Tyler Allen from the-tech-tutorial.com  
 Jacob Grunwald  
-### Known bugs
-None yet!
+### Known Bugs/Open Issues
+No known bugs yet!
+
+Could figure out a way to retrieve usernames in the IRC channel and create the affection linked list off of the creating an even better affection function all together. Other than that someone could impliment some other cool things for the bot like a quick little text game. 
+
