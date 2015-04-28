@@ -5,7 +5,7 @@
 
 struct node {
     int value;
-	std::string word;
+    std::string word;
     node *next;
     node *prev;
 };
@@ -34,12 +34,12 @@ public:
 	void botQuadForm(const char *buf);
 	void botTrig(const char *buf);
 
-    void quoteDelete(char *buf);
-    void quoteAdd(char *buf);
-    void quotePrint(char *buf);
-    void quotePrintAll(char *buf);
-    void affectionDis(char *buf);
-    void affectionCom(char *buf);
+	void quoteDelete(char *buf);
+	void quoteAdd(char *buf);
+	void quotePrint(char *buf);
+	void quotePrintAll(char *buf);
+	void affectionDis(char *buf);
+	void affectionCom(char *buf);
 
 private:
 	const char *port;
