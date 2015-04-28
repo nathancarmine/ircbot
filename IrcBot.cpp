@@ -272,6 +272,48 @@ void IrcBot::sendPong(const char *buf)
 	}
 }
 
+void IrcBot::botRoot(const char *buf) {
+	string bufstr(buf);
+	istringstream bufstream(bufstr);
+	string rootype;
+	string numStr;
+	for(int i=0; i<5; i++)
+		getline(bufstream, rootype, ' ');
+	getline(bufstream, numStr, ' ');
+	numStr.erase(remove(numStr.begin(), numStr.end(), '\r'), numStr.end());
+	numStr.erase(remove(numStr.begin(), numStr.end(), '\n'), numStr.end());
+	float result = 0;
+	if(!isdigit(numStr[0]) && numStr[0] != '.')
+		if(numStr[0] == '-')
+			privMsg("Nice try, but negative square roots are merely a Fig Newton of your imaginary number.");
+		else
+			privMsg("Function sqrt: [sqrt/cbrt] [number] Ex: sqrt 4");
+	else {
+		float num = atof(numStr.c_str());
+		if(num < 0)
+			privMsg("Nice try, but negative square roots are merely a Fig Newton of your imaginary number.");
+		else if (rootype == "sqrt" || rootype == "cbrt") {
+			if(rootype == "sqrt")
+				result = sqrt(num);
+			else if(rootype == "cbrt")
+				result = cbrt(num);
+						stringstream resultStream;
+			resultStream << result;
+			string resultStr = resultStream.str();
+			char msg[1000];
+			strcpy(msg, rootype.c_str());
+			strcat(msg, "(");
+			strcat(msg, numStr.c_str());
+			strcat(msg, ") = ");
+			strcat(msg, resultStr.c_str());
+			puts(msg);
+			privMsg(msg);
+		} else
+			privMsg("Function sqrt: [sqrt/cbrt] [number] Ex: sqrt 4");
+
+	}
+}
+
 void IrcBot::botMath(const char *buf) {
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
@@ -284,22 +326,25 @@ void IrcBot::botMath(const char *buf) {
 	getline(bufstream, num2str, ' ');
 	num2str.erase(remove(num2str.begin(), num2str.end(), '\r'), num2str.end());
 	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());	
-	cout<<endl;
-	cout<<"num2str: "<<num2str;
 	float result = 0;
 	bool sendresult = 1;
-	if(!isdigit(num1str[0]) || !isdigit(num2str[0])) {
+	if((!isdigit(num1str[0]) && num1str[0] != '.' && num1str[0] != '-' ) ||
+		(!isdigit(num2str[0]) && num2str[0] != '.' && num2str[0] != '-')) {
 		privMsg("Function math: math [num1] [operator] [num2] Ex: math 1 + 2");
-		privMsg("Operators supported: +, -, *, x, /, \%");
+		privMsg("Operators supported: + - * x / \%");
 		sendresult = 0;
 	} else {
 		float num1 = atof(num1str.c_str());
 		float num2 = atof(num2str.c_str());
 		if(op == "+")
 			result = num1 + num2;
-		else if(op == "-")
+		else if(op == "-") {
 			result = num1 - num2;
-		else if(op == "*" || op == "x")
+			if(num2 < 0) {
+				num2str.erase(num2str.begin());
+				op = "+";
+			}
+		} else if(op == "*" || op == "x")
 			result = num1 * num2;
 		else if(op == "/") {
 			if(num2 == 0) {
@@ -327,12 +372,11 @@ void IrcBot::botMath(const char *buf) {
 		stringstream resultStream;
 		resultStream << result;
 		string resultStr = resultStream.str();
-		string equals = " = ";
 		char msg[1000];
 		strcpy(msg, num1str.c_str());
 		strcat(msg, op.c_str());
 		strcat(msg, num2str.c_str());
-		strcat(msg, equals.c_str());
+		strcat(msg, " = ");
 		strcat(msg, resultStr.c_str());
 		puts(msg);
 		privMsg(msg);
@@ -457,10 +501,19 @@ void IrcBot::botFramework(const char *buf)
 	char cmd2[1000];
 	strcpy(cmd2, nickcmd);
 	strcat(cmd2, ": math");
+	char cmd3_1[1000];
+	strcpy(cmd3_1, nickcmd);
+	strcat(cmd3_1, ": sqrt");
+	char cmd3_2[1000];
+	strcpy(cmd3_2, nickcmd);
+	strcat(cmd3_2, ": cbrt");
+
     if(charSearch(buf, cmd1))
         privMsg("Hi, how's it going?");
 	else if(charSearch(buf, cmd2))
 		botMath(buf);
+	else if(charSearch(buf, cmd3_1) || charSearch(buf, cmd3_2))
+		botRoot(buf);
 }
 
 void IrcBot::privMsg(const char *privmsg) {
