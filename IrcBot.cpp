@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sstream>
+#include <math.h>
+#include <algorithm>
 #include <unistd.h>
 #include <errno.h>
+#include <string>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -22,8 +25,8 @@ using namespace std;
 
 IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr)
 {
-    root = new node;
-    root->next = NULL;
+	root = new node;
+	root->next = NULL;
 	nick = _nick;
 	server = _server;
 	channel = _channel;
@@ -206,7 +209,7 @@ bool IrcBot::sendData(const char *msg)
 		return true;
 }
 
-void IrcBot::sendPong(char *buf)
+void IrcBot::sendPong(const char *buf)
 {
 	//Get the reply address
 	//loop through bug and find the location of PING
@@ -215,58 +218,58 @@ void IrcBot::sendPong(char *buf)
 	const char * toSearch = "PING ";
 
 	for(unsigned int i = 0; i < strlen(buf); i++)
+	{
+		//If the active char is equil to the first search item then search toSearch
+		if (buf[i] == toSearch[0])
 		{
-			//If the active char is equil to the first search item then search toSearch
-			if (buf[i] == toSearch[0])
+			bool found = true;
+			//search the char array for search field
+			for(unsigned int x = 1; x < 4; x++)
 			{
-				bool found = true;
-				//search the char array for search field
-				for(unsigned int x = 1; x < 4; x++)
+				if (buf[i+x]!=toSearch[x])
 				{
-					if (buf[i+x]!=toSearch[x])
-					{
-						found = false;
-					}
-				}
-
-				//if found return true;
-				if (found == true)
-				{
-					int count = 0;
-					//Count the chars
-					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf); x++)
-					{
-						count++;
-					}
-
-					//Create the new char array
-					char returnHost[count + 5];
-					returnHost[0]='P';
-					returnHost[1]='O';
-					returnHost[2]='N';
-					returnHost[3]='G';
-					returnHost[4]=' ';
-
-
-					count = 0;
-					//set the hostname data
-					for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
-					{
-						returnHost[count+5]=buf[x];
-						count++;
-					}
-
-					//send the pong
-					if (sendData(returnHost))
-					{
-						cout << timeNow() <<"  Ping Pong" << endl;
-					}
-
-
-					return;
+					found = false;
 				}
 			}
+
+			//if found return true;
+			if (found == true)
+			{
+				int count = 0;
+				//Count the chars
+				for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+				{
+					count++;
+				}
+
+				//Create the new char array
+				char returnHost[count + 5];
+				returnHost[0]='P';
+				returnHost[1]='O';
+				returnHost[2]='N';
+				returnHost[3]='G';
+				returnHost[4]=' ';
+
+
+				count = 0;
+				//set the hostname data
+				for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
+				{
+					returnHost[count+5]=buf[x];
+					count++;
+				}
+
+				//send the pong
+				if (sendData(returnHost))
+				{
+					cout << timeNow() <<"  Ping Pong" << endl;
+				}
+
+
+				return;
+			}
 		}
+	}
 }
 
 void IrcBot::botMath(const char *buf) {
@@ -279,33 +282,59 @@ void IrcBot::botMath(const char *buf) {
 		getline(bufstream, num1str, ' ');
 	getline(bufstream, op, ' ');
 	getline(bufstream, num2str, ' ');
-	int num1 = atoi(num1str.c_str());
-	int num2 = atoi(num2str.c_str());
-	int result = 0;
+	num2str.erase(remove(num2str.begin(), num2str.end(), '\r'), num2str.end());
+	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());	
+	cout<<endl;
+	cout<<"num2str: "<<num2str;
+	float result = 0;
 	bool sendresult = 1;
-	if(op == "+")
-		result = num1 + num2;
-	else if(op == "-")
-		result = num1 - num2;
-	else if(op == "*" || op == "x")
-		result = num1 * num2;
-	else if(op == "/") {
-		if(num2 == 0) {
-			privMsg("Nice try. I'd rather not make the universe explode today.");
-			sendresult = 0;
-		} else
-			result = num1 / num2;
-	} else if(op == "%")
-		result = num1 % num2;
-	else {
-		privMsg("Function math: math num1 operator num2. Ex: math 1 + 2");
+	if(!isdigit(num1str[0]) || !isdigit(num2str[0])) {
+		privMsg("Function math: math [num1] [operator] [num2] Ex: math 1 + 2");
+		privMsg("Operators supported: +, -, *, x, /, \%");
 		sendresult = 0;
+	} else {
+		float num1 = atof(num1str.c_str());
+		float num2 = atof(num2str.c_str());
+		if(op == "+")
+			result = num1 + num2;
+		else if(op == "-")
+			result = num1 - num2;
+		else if(op == "*" || op == "x")
+			result = num1 * num2;
+		else if(op == "/") {
+			if(num2 == 0) {
+				privMsg("Nice try, but I'd rather not blow up the universe today.");
+				sendresult = 0;
+			} else
+				result = num1 / num2;
+		} else if(op == "\%") {
+			int num1int = round(num1);
+			int num2int = round(num2);
+			stringstream numStream;
+			numStream << num1int;
+			num1str = numStream.str();;
+			numStream.str(string());
+			numStream << num2int;
+			num2str = numStream.str();
+			result = num1int % num2int;
+		} else {
+			privMsg("Function math: math [num1] [operator] [num2] Ex: math 1 + 2");
+			privMsg("Operators supported: +, -, *, x, /, \%");
+			sendresult = 0;
+		}
 	}
 	if(sendresult) {
 		stringstream resultStream;
 		resultStream << result;
 		string resultStr = resultStream.str();
-		const char *msg = resultStr.c_str();
+		string equals = " = ";
+		char msg[1000];
+		strcpy(msg, num1str.c_str());
+		strcat(msg, op.c_str());
+		strcat(msg, num2str.c_str());
+		strcat(msg, equals.c_str());
+		strcat(msg, resultStr.c_str());
+		puts(msg);
 		privMsg(msg);
 	}
 }
@@ -432,125 +461,6 @@ void IrcBot::botFramework(const char *buf)
         privMsg("Hi, how's it going?");
 	else if(charSearch(buf, cmd2))
 		botMath(buf);
-
-    if (charSearch(buf,"Hello bot"))
-    {
-        sendData("PRIVMSG #Botting :Hi, How is it going\r\n");
-    }
-    if (charSearch(buf,".q add")){
-        quoteAdd(buf);
-    }
-    if (charSearch(buf, ".q delete")){
-        quoteDelete(buf);
-    }
-    if (charSearch(buf, ".q print all")){
-        quotePrintAll(buf);
-    }
-}
-
-void IrcBot::quoteAdd(char *buf){
-    char hold[MAXDATASIZE];
-    char data[MAXDATASIZE];
-    node *star = root;
-    node *temp = new node;
-
-    c++;
-    stringstream strs;
-    strs << c;
-    string temp_str = strs.str();
-    char* char_type = (char*) temp_str.c_str();
-
-    privMsg(char_type);
-
-    strcpy(hold,buf);
-
-    strs << hold;
-    temp_str = strs.str();
-
-    while(star->next != NULL){
-        star = star->next;
-    }
-    temp->prev = star;
-    temp->next = NULL;
-    star->value = c;
-    star->word = temp_str;
-    star->next = temp;
-
-    privMsg(buf);
-    privMsg(data);
-    //sendData(hold);
-    //sendData(data);
-}
-
-void IrcBot::quoteDelete(char *buf){
-    node *star = root;
-    node *temp = root->next;
-    int position;
-
-    for(int i; i<c;i++){
-        stringstream strs;
-        strs << i;
-        string temp_str = strs.str();
-        char* char_type = (char*) temp_str.c_str();
-
-        if(charSearch(buf,char_type) == true){
-            position = i;
-            break;
-        }
-    }
-    while(star->value != position){
-        star = temp;
-        temp = temp->next;
-    }
-    star = star->prev;
-    star->next = temp;
-    temp->prev = star;
-
-    char* char_type = (char*) star->word.c_str();
-    privMsg(char_type);
-
-    stringstream strs;
-    strs << position;
-    string temp_str = strs.str();
-    char_type = (char*) temp_str.c_str();
-    strcat(char_type," Has been deleted.");
-    privMsg(char_type);
-    sendData("PRIVMSG #Botting :Deleting function works\r\n");
-}
-
-void IrcBot::quotePrintAll(char *buf){
-    node *star = root;
-    //char hold[MAXDATASIZE];
-    while(star != NULL){
-        char* char_type = (char*) star->word.c_str();
-        //sendData(star->word);
-        privMsg(char_type);
-        sendData("PRIVMSG #Botting :Looping Print Function\r\n");
-        star = star->next;
-    }
-}
-
-void IrcBot::quotePrint(char *buf){
-    node *star = root;
-    int position;
-
-    for(int i; i<c;i++){
-        stringstream strs;
-        strs << i;
-        string temp_str = strs.str();
-        char* char_type = (char*) temp_str.c_str();
-
-        if(charSearch(buf,char_type) == true){
-            position = i;
-            break;
-        }
-    }
-    while(star->value != position){
-        star = star->next;
-    }
-    char* char_type = (char*) star->word.c_str();
-    privMsg(char_type);
-    sendData("PRIVMSG #Botting :Printing function works\r\n");
 }
 
 void IrcBot::privMsg(const char *privmsg) {
