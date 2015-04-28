@@ -12,7 +12,9 @@ We recommend using g++ to compile the code:
 If you do not have g++ installed:  
 `sudo apt-get install g++`
 
-With your IRC client connected to an IRC server create a new channel. Run the program with three command line arguments, first will be the bots nickname, second will be the server address and the channel will be entered last with quotes around the channel name. So [nickname] [server address] [channel] for example the local server would look something like this:  
+With your IRC client connected to an IRC server create a new channel. Run the program with three command line arguments: first will be the bots nickname, second will be the server address, and the channel will be entered last with quotes around the channel name.  
+`./Fileout [nickname] [server address] "[channel]"`  
+For example, the local server would look something like this:  
 `./IrcBot Botty 127.0.0.1 "#Botting"`  
 Be sure to use quotes around the channel name. The bot should then join the channel on the server with the nickname you gave it. After it joins there are some [message triggers](https://github.com/nathancarmine/ircbot/wiki/IRC-Bot-Response-Triggers) the bot is looking for before it will reply.
 
