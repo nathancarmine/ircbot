@@ -44,6 +44,7 @@ private:
 	void privMsg(const char *privmsg);
 	void botMath(const char *buf);
 	void botRoot(const char *buf);
+	void botHypot(const char *buf);
 
     void quoteDelete(char *buf);
     void quoteAdd(char *buf);

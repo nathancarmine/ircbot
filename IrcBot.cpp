@@ -272,6 +272,40 @@ void IrcBot::sendPong(const char *buf)
 	}
 }
 
+void IrcBot::botHypot(const char *buf) {
+	string bufstr(buf);
+	istringstream bufstream(bufstr);
+	string num1str;
+	string num2str;
+	for(int i=0; i<6; i++)
+		getline(bufstream, num1str, ' ');
+	getline(bufstream, num2str, ' ');
+	num2str.erase(remove(num2str.begin(), num2str.end(), '\r'), num2str.end());
+	num2str.erase(remove(num2str.begin(), num2str.end(), '\n'), num2str.end());
+	if((!isdigit(num1str[0]) && num1str[0] != '.' && num1str[0] != '-' ) ||
+		(!isdigit(num2str[0]) && num2str[0] != '.' && num2str[0] != '-')) {
+		privMsg("Function Hypot: hypot [num1] [num2] Ex: hypot 3 4");
+		if(num1str[0] == '-' || num2str[0] == '-')
+			privMsg("Nice try, but the side of a triangle cannot be negative.");
+	} else {
+		float num1 = atof(num1str.c_str());
+		float num2 = atof(num2str.c_str());
+		float result = hypot(num1, num2);
+		stringstream resultStream;
+		resultStream << result;
+		string resultStr = resultStream.str();
+		char msg[1000];
+		strcpy(msg, "hypot(");
+		strcat(msg, num1str.c_str());
+		strcat(msg, ", ");
+		strcat(msg, num2str.c_str());
+		strcat(msg, ") = ");
+		strcat(msg, resultStr.c_str());
+		puts(msg);
+		privMsg(msg);
+	}
+}
+
 void IrcBot::botRoot(const char *buf) {
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
@@ -297,7 +331,7 @@ void IrcBot::botRoot(const char *buf) {
 				result = sqrt(num);
 			else if(rootype == "cbrt")
 				result = cbrt(num);
-						stringstream resultStream;
+			stringstream resultStream;
 			resultStream << result;
 			string resultStr = resultStream.str();
 			char msg[1000];
@@ -498,6 +532,9 @@ void IrcBot::botFramework(const char *buf)
 	char cmd1[1000];
 	strcpy(cmd1, nickcmd);
 	strcat(cmd1, ": Hi bot");
+	char cmd1_2[1000];
+	strcpy(cmd1_2, nickcmd);
+	strcat(cmd1_2, ": Senpaiii!!~");
 	char cmd2[1000];
 	strcpy(cmd2, nickcmd);
 	strcat(cmd2, ": math");
@@ -507,13 +544,19 @@ void IrcBot::botFramework(const char *buf)
 	char cmd3_2[1000];
 	strcpy(cmd3_2, nickcmd);
 	strcat(cmd3_2, ": cbrt");
+	char cmd4[1000];
+	strcpy(cmd4, nickcmd);
+	strcat(cmd4, ": hypot");
 
-    if(charSearch(buf, cmd1))
+    if(charSearch(buf, cmd1) || charSearch(buf, cmd1_2))
         privMsg("Hi, how's it going?");
 	else if(charSearch(buf, cmd2))
 		botMath(buf);
 	else if(charSearch(buf, cmd3_1) || charSearch(buf, cmd3_2))
 		botRoot(buf);
+	else if(charSearch(buf, cmd4))
+		botHypot(buf);
+
 }
 
 void IrcBot::privMsg(const char *privmsg) {
