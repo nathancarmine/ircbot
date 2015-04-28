@@ -60,6 +60,6 @@ IrcBot::botTrig:
 Integrating division into the trig functions would be nice, so cos 3pi/2 would work properly, for instance.
 Also, typing "Bot: cos 2pa" will compute cos 2, instead of flagging an error.
 
-Another known issue is that .q add will be apart of the quote when it gets turned to a string.  
+Another known issue is that .q add will be a part of the quote when it gets turned to a string.  
 
 One suggestion would be to figure out a way to retrieve usernames in the IRC channel and create the affection linked list off of the usernames retrieved creating an even better affection function all together. Other than that someone could impliment some other cool things for the bot like a quick little text game. 
