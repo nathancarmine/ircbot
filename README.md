@@ -56,7 +56,7 @@ Jacob Grunwald
 When the bot first joins the server, it may not reply to the first command, like so: ![like so](http://i.imgur.com/NXMdAqd.png)  
 However, it will immediately reply to each subsequent command.
 
-IrcBot::botTrig:
+IrcBot::botTrig:  
 Integrating division into the trig functions would be nice, so cos 3pi/2 would work properly, for instance.
 Also, typing "Bot: cos 2pa" will compute cos 2, instead of flagging an error.
 
