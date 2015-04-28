@@ -768,7 +768,7 @@ void IrcBot::affectionDis(char *buf){
  * Follow the examples bellow to call this function                              *
  *                                                                               *
  * Example:                                                                      *
- * !Hit,!Poke,!Play,!Pet,!Mean,!Love                                             *
+ * Hit,Poke,Play,Pet,Mean,Love                                             *
  *                                                                               *
  * Precondition:                                                                 *
  * Bot must be running on a server user must enter a message                     *
@@ -782,7 +782,7 @@ void IrcBot::affectionCom(char *buf){
     char witty[MAXDATASIZE];
     //If statements for when a certain command is given to the bot this
     //this isn't hard stuff you can figure it out
-    if (charSearch(buf, "!Hit")){
+    if (charSearch(buf, "Hit")){
         randomNum = rand() % 100 + 1;
         if(randomNum<20){
             user->affeLvl += -2;
@@ -807,7 +807,7 @@ void IrcBot::affectionCom(char *buf){
             }
         }
     }
-    if (charSearch(buf, "!Pet")){
+    if (charSearch(buf, "Pet")){
         randomNum = rand() % 100 + 1;
         if(randomNum<50){
             user->affeLvl += 0;
@@ -829,7 +829,7 @@ void IrcBot::affectionCom(char *buf){
             }
         }
     }
-    if (charSearch(buf, "!Play")){
+    if (charSearch(buf, "Play")){
         randomNum = rand() % 100 + 1;
         if(randomNum<80){
             user->affeLvl += 0;
@@ -851,7 +851,7 @@ void IrcBot::affectionCom(char *buf){
             }
         }
     }
-    if (charSearch(buf, "!Poke")){
+    if (charSearch(buf, "Poke")){
         randomNum = rand() % 100 + 1;
         if(randomNum<20){
             user->affeLvl += -2;
@@ -876,7 +876,7 @@ void IrcBot::affectionCom(char *buf){
             }
         }
     }
-    if (charSearch(buf, "!Mean")){
+    if (charSearch(buf, "Mean")){
         randomNum = rand() % 100 + 1;
         if(randomNum<40){
             user->affeLvl += -5;
@@ -901,7 +901,7 @@ void IrcBot::affectionCom(char *buf){
             }
         }
     }
-    if (charSearch(buf, "!Love")){
+    if (charSearch(buf, "Love")){
         randomNum = rand() % 100 + 1;
         if(randomNum<60){
             user->affeLvl += -4;
@@ -966,6 +966,39 @@ void IrcBot::botFramework(char *buf)
 	char cmd4[MAXDATASIZE];
 	strcpy(cmd4, nickcmd);
 	strcat(cmd4, ": hypot");
+    char cmd5[MAXDATASIZE];
+	strcpy(cmd5, nickcmd);
+	strcat(cmd5, ": q add");
+    char cmd6[MAXDATASIZE];
+	strcpy(cmd6, nickcmd);
+	strcat(cmd6, ": q delete");
+    char cmd7[MAXDATASIZE];
+	strcpy(cmd7, nickcmd);
+	strcat(cmd7, ": q printall");
+    char cmd8[MAXDATASIZE];
+	strcpy(cmd8, nickcmd);
+	strcat(cmd8, ": q print");
+    char cmd9[MAXDATASIZE];
+	strcpy(cmd9, nickcmd);
+	strcat(cmd9, ": Affection");
+    char cmd10_1[MAXDATASIZE];
+    strcpy(cmd10_1, nickcmd);
+	strcat(cmd10_1, ": Hit bot");
+    char cmd10_2[MAXDATASIZE];
+    strcpy(cmd10_2, nickcmd);
+	strcat(cmd10_2, ": Pet bot");
+    char cmd10_3[MAXDATASIZE];
+    strcpy(cmd10_3, nickcmd);
+	strcat(cmd10_3, ": Poke bot");
+    char cmd10_4[MAXDATASIZE];
+    strcpy(cmd10_4, nickcmd);
+	strcat(cmd10_4, ": Play bot");
+    char cmd10_5[MAXDATASIZE];
+    strcpy(cmd10_5, nickcmd);
+	strcat(cmd10_5, ": Mean bot");
+    char cmd10_6[MAXDATASIZE];
+    strcpy(cmd10_6, nickcmd);
+	strcat(cmd10_6, ": Love bot");
 
     if(charSearch(buf, cmd1) || charSearch(buf, cmd1_2))
         privMsg("Hi, how's it going?");
@@ -975,26 +1008,18 @@ void IrcBot::botFramework(char *buf)
 		botRoot(buf);
 	else if(charSearch(buf, cmd4))
 		botHypot(buf);
-
-    if (charSearch(buf,".q add")){
+    else if(charSearch(buf, cmd5))
         quoteAdd(buf);
-    }
-    if (charSearch(buf, ".q delete")){
+    else if(charSearch(buf, cmd6))
         quoteDelete(buf);
-    }
-    if (charSearch(buf, ".q printall")){
+    else if(charSearch(buf, cmd7))
         quotePrintAll(buf);
-    }
-    if (charSearch(buf, ".q print")){
+    else if(charSearch(buf, cmd8))
         quotePrintAll(buf);
-    }
-    //Not sure how to retrieve usernames to keep track of by the bot
-    if (charSearch(buf, "!Affection")){
-        affectionDis(buf);
-    }
-    if ( (charSearch(buf, "!Hit bot")) || (charSearch(buf, "!Pet bot")) || (charSearch(buf, "!Poke bot")) || (charSearch(buf, "!Play bot")) || (charSearch(buf, "!Mean bot")) || (charSearch(buf, "!Love bot")) ){
+    else if(charSearch(buf, cmd9))
+        affectionDis(buf);//Not sure how to retrieve usernames to keep track of by the bot
+    else if ( (charSearch(buf, cmd10_1)) || (charSearch(buf, cmd10_2)) || (charSearch(buf, cmd10_3)) || (charSearch(buf, cmd10_4)) || (charSearch(buf, cmd10_5)) || (charSearch(buf, cmd10_6)) )
         affectionCom(buf);
-    }
 }
 /*********************************************************************************
  * Function Prototype:                                                           *
