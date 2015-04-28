@@ -10,6 +10,12 @@ struct node {
     node *prev;
 };
 
+struct affe {
+    int affeLvl;
+    std::string name;
+    node *next;
+};
+
 class IrcBot
 {
 public:
@@ -20,13 +26,27 @@ public:
 
 	void start();
 	bool charSearch(const char *toSearch, const char *searchFor);
+	void botHelp();
+
+	void botMath(const char *buf);
+	void botRoot(const char *buf);
+	void botHypot(const char *buf);
+	void botQuadForm(const char *buf);
+	void botTrig(const char *buf);
+
+    void quoteDelete(char *buf);
+    void quoteAdd(char *buf);
+    void quotePrint(char *buf);
+    void quotePrintAll(char *buf);
+    void affectionDis(char *buf);
+    void affectionCom(char *buf);
 
 private:
 	const char *port;
 	int s; //the socket descriptor
-
 	int c;
-	node *root;	
+	node *root;
+	affe *point;
 
 	const char *nick;
 	const char *server;
@@ -39,17 +59,8 @@ private:
 
 	bool sendData(const char *msg);
 	void sendPong(const char *buf);
-
 	void botFramework(const char *buf);
 	void privMsg(const char *privmsg);
-	void botMath(const char *buf);
-	void botRoot(const char *buf);
-	void botHypot(const char *buf);
-
-    void quoteDelete(char *buf);
-    void quoteAdd(char *buf);
-    void quotePrint(char *buf);
-    void quotePrintAll(char *buf);
 };
 
 #endif /* IRCBOT_H_ */
