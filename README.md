@@ -59,7 +59,7 @@ When the bot first joins the server, it may not reply to the first command, like
 However, it will immediately reply to each subsequent command.
 
 IrcBot::botTrig:  
-Integrating division into the trig functions would be nice, so cos 3pi/2 would work properly, for instance.
+Integrating division into the trig functions would be nice, so cos 3pi/2 would work properly, for instance.  
 Also, typing "Bot: cos 2pa" will compute cos 2, instead of flagging an error.
 
 Another known issue is that .q add will be a part of the quote when it gets turned to a string.  
