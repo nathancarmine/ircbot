@@ -12,7 +12,7 @@ We recommend using g++ to compile the code:
 If you do not have g++ installed:  
 `sudo apt-get install g++`
 
-With your IRC client connected to an IRC server create a new channel. Run the program with three command line arguments: first will be the bots nickname, second will be the server address, and the channel will be entered last with quotes around the channel name.  
+With your IRC client connected to an IRC server, create a new channel. Run the program with three command line arguments: first will be the bots nickname, second will be the server address, and the channel will be entered last with quotes around the channel name.  
 `./Fileout [nickname] [server address] "[channel]"`  
 For example, the local server would look something like this:  
 `./IrcBot Botty 127.0.0.1 "#Botting"`  
@@ -23,7 +23,7 @@ When rebooting the bot, first stop it by pressing ctrl-z. Be sure to **terminate
 
 ### Dependencies
 A connection to an IRC server is required. We recommend that you do not connect to a server on the internet as this bot might get you banned on one of those servers. Instead use a local server connection. We suggest that you install ircd-hybrid to use as your local server. [Here](https://github.com/nathancarmine/ircbot/wiki/How-to-install-a-local-server) is a quick installation guide for linux.  
-An IRC client version is required as well for communication with the bot. If you don't know what an IRC client is then [here](http://en.wikipedia.org/wiki/Internet_Relay_Chat) is the wikipedia page on it. Since you will need to install an IRC client to test our program [here](https://github.com/nathancarmine/ircbot/wiki/Installing-and-Using-Irssi) is an installation link for Irssi. If you want to use your own IRC client make sure it can create new channels, since the bot will be joining you in that channel.  
+An IRC client version is required for communication with the bot as well. If you don't know what an IRC client is then [here](http://en.wikipedia.org/wiki/Internet_Relay_Chat) is the wikipedia page on it. Since you will need to install an IRC client to test our program, [here](https://github.com/nathancarmine/ircbot/wiki/Installing-and-Using-Irssi) is an installation link for Irssi. If you want to use your own IRC client make sure it can create new channels, since the bot will be joining you in that channel.  
 The rest of our dependencies are:  
 * \#include "IrcBot.h"  
 * \#include \<iostream>  
