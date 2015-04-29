@@ -7,7 +7,7 @@ We aim to create the framework for a bot that could connect to an irc server and
 * A bot affection meter to a user
 
 ### How to run
-**For installation instructions, please refer to the Dependencies section.**
+#####For installation instructions, please refer to the Dependencies section.
 
 We recommend using g++ to compile the code:  
 `g++ main.cpp -o IrcBot`  
