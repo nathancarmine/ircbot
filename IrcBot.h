@@ -16,14 +16,12 @@ struct affe {
     node *next;
 };
 
-class IrcBot
-{
+class IrcBot {
 public:
 	IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr);
 	virtual ~IrcBot();
 
 	bool setup;
-
 	void start();
 	bool charSearch(const char *toSearch, const char *searchFor);
 	void botHelp();
@@ -54,11 +52,10 @@ private:
 	const char *usr;
 
 	bool isConnected(const char *buf);
-
 	const char * timeNow();
-
 	bool sendData(const char *msg);
 	void sendPong(const char *buf);
+	
 	void botFramework(const char *buf);
 	void privMsg(const char *privmsg);
 };
