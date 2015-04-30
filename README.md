@@ -10,7 +10,7 @@ We aim to create the framework for a bot that could connect to an irc server and
 * **For installation instructions, please refer to the Dependencies section.**
 
 We recommend using g++ to compile the code:  
-`g++ main.cpp -o IrcBot`  
+`g++ main.cpp IrcBot.cpp -o IrcBot`  
 If you do not have g++ installed:  
 `sudo apt-get install g++`
 
