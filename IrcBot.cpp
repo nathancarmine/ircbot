@@ -1327,3 +1327,11 @@ void IrcBot::privMsg(const char *privmsg) {
 	puts(msg);
 	sendData(msg);
 }
+/* Adding
+ * eight
+ * lines
+ * so
+ * line
+ * count
+ * is
+ * 1337 */
