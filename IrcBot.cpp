@@ -34,8 +34,7 @@ using namespace std;
  * Postcondition:                                                                                 *
  * Initializes stuff that is needed to run the program                                            *
  **************************************************************************************************/
-IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr)
-{
+IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr) {
 	root = new node;
 	root->next = NULL;
 	point = new affe;
@@ -61,8 +60,7 @@ IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, con
  * Postcondition:                                                                *
  * Program quits out                                                             *
  ********************************************************************************/
-IrcBot::~IrcBot()
-{
+IrcBot::~IrcBot() {
 	close (s);
 }
 
@@ -80,8 +78,7 @@ IrcBot::~IrcBot()
  * Postcondition:                                                                *
  * Connects to server and waits for responses                                    *
  ********************************************************************************/
-void IrcBot::start()
-{
+void IrcBot::start() {
 	struct addrinfo hints, *servinfo;
 
 	//Setup run with no errors
@@ -91,16 +88,14 @@ void IrcBot::start()
 	port = "6667";
 
 	//Ensure that servinfo is clear
-	memset(&hints, 0, sizeof hints); // make sure the struct is empty
+	memset(&hints, 0, sizeof hints); //make sure the struct is empty
 
-	//setup hints
-	hints.ai_family = AF_UNSPEC; // don't care IPv4 or IPv6
-	hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
+	hints.ai_family = AF_UNSPEC; //IPv4 or IPv6
+	hints.ai_socktype = SOCK_STREAM; //TCP stream sockets
 
-	//Setup the structs if error print why
+	//Setup the structs. If error, print why
 	int res;
-	if ((res = getaddrinfo(server,port,&hints,&servinfo)) != 0)
-	{
+	if ((res = getaddrinfo(server,port,&hints,&servinfo)) != 0) {
 		setup = false;
 		fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(res));
 	}
@@ -108,13 +103,10 @@ void IrcBot::start()
 
 	//setup the socket
 	if ((s = socket(servinfo->ai_family,servinfo->ai_socktype,servinfo->ai_protocol)) == -1)
-	{
 		perror("client: socket");
-	}
 
 	//Connect
-	if (connect(s,servinfo->ai_addr, servinfo->ai_addrlen) == -1)
-	{
+	if (connect(s,servinfo->ai_addr, servinfo->ai_addrlen) == -1) {
 		close (s);
 		perror("Client Connect");
 	}
@@ -136,26 +128,23 @@ void IrcBot::start()
 	strcat(joinchan, channel);
 	strcat(joinchan, "\r\n");
 	puts(joinchan);
-	while (1)
-	{
+	while (1) {
 		//declars
 		count++;
 
 		switch (count) {
 			case 3:
-					//after 3 recives send data to server (as per IRC protacol)
-					sendData(sendnick);
-					sendData(usr);
+				//after 3 recives send data to server (as per IRC protacol)
+				sendData(sendnick);
+				sendData(usr);
 				break;
 			case 4:
-					//Join a channel after we connect, this time we choose beaker
+				//Join a channel after we connect, this time we choose beaker
 				//sendData("JOIN #newchan\r\n");
 				sendData(joinchan);
 			default:
 				break;
 		}
-
-
 
 		//Recv & print Data
 		numbytes = recv(s,buf,100-1,0);
@@ -173,13 +162,10 @@ void IrcBot::start()
 		 * see http://www.irchelp.org/irchelp/rfc/chapter4.html
 		 */
 		if (charSearch(buf,"PING"))
-		{
 			sendPong(buf);
-		}
 
 		//break if connection closed
-		if (numbytes==0)
-		{
+		if (numbytes==0) {
 			cout << "----------------------CONNECTION CLOSED---------------------------"<< endl;
 			cout << timeNow() << endl;
 
@@ -202,25 +188,19 @@ void IrcBot::start()
  * Postcondition:                                                                *
  * Returns true if a match is found and false if a match is not found            *
  ********************************************************************************/
-bool IrcBot::charSearch(const char *toSearch, const char *searchFor)
-{
+bool IrcBot::charSearch(const char *toSearch, const char *searchFor) {
 	int len = strlen(toSearch);
 	int forLen = strlen(searchFor); // The length of the searchfor field
 
 	//Search through each char in toSearch
-	for (int i = 0; i < len;i++)
-	{
+	for (int i = 0; i < len;i++) {
 		//If the active char is equil to the first search item then search toSearch
-		if (searchFor[0] == toSearch[i])
-		{
+		if (searchFor[0] == toSearch[i]) {
 			bool found = true;
 			//search the char array for search field
-			for (int x = 1; x < forLen; x++)
-			{
+			for (int x = 1; x < forLen; x++) {
 				if (toSearch[i+x]!=searchFor[x])
-				{
 					found = false;
-				}
 			}
 
 			//if found return true;
@@ -246,8 +226,8 @@ bool IrcBot::charSearch(const char *toSearch, const char *searchFor)
  * Postcondition:                                                                *
  * Returns true if a match is found and false if a match is not found            *
  ********************************************************************************/
-bool IrcBot::isConnected(const char *buf)
-{//returns true if "/MOTD" is found in the input strin
+bool IrcBot::isConnected(const char *buf) {
+	//returns true if "/MOTD" is found in the input strin
 	//If we find /MOTD then its ok join a channel
 	if (charSearch(buf,"/MOTD") == true)
 		return true;
@@ -268,8 +248,8 @@ bool IrcBot::isConnected(const char *buf)
  * Postcondition:                                                                *
  * Returns true or false depending on if the MOTF is found                       *
  ********************************************************************************/
-const char * IrcBot::timeNow()
-{//returns the current date and time
+const char * IrcBot::timeNow() {
+	//returns the current date and time
 	time_t rawtime;
 	struct tm * timeinfo;
 
@@ -317,38 +297,29 @@ bool IrcBot::sendData(const char *msg)
  * Postcondition:                                                                *
  * A message will have now been sent to the IRC channel                          *
  ********************************************************************************/
-void IrcBot::sendPong(const char *buf)
-{
+void IrcBot::sendPong(const char *buf) {
 	//Get the reply address
 	//loop through bug and find the location of PING
 	//Search through each char in toSearch
 
 	const char * toSearch = "PING ";
 
-	for(unsigned int i = 0; i < strlen(buf); i++)
-	{
+	for(unsigned int i = 0; i < strlen(buf); i++) {
 		//If the active char is equil to the first search item then search toSearch
-		if (buf[i] == toSearch[0])
-		{
+		if (buf[i] == toSearch[0]) {
 			bool found = true;
 			//search the char array for search field
-			for(unsigned int x = 1; x < 4; x++)
-			{
+			for(unsigned int x = 1; x < 4; x++) {
 				if (buf[i+x]!=toSearch[x])
-				{
 					found = false;
-				}
 			}
 
 			//if found return true;
-			if (found == true)
-			{
+			if (found == true) {
 				int count = 0;
 				//Count the chars
 				for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
-				{
 					count++;
-				}
 
 				//Create the new char array
 				char returnHost[count + 5];
@@ -361,15 +332,13 @@ void IrcBot::sendPong(const char *buf)
 
 				count = 0;
 				//set the hostname data
-				for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++)
-				{
+				for(unsigned int x = (i+strlen(toSearch)); x < strlen(buf);x++) {
 					returnHost[count+5]=buf[x];
 					count++;
 				}
 
 				//send the pong
-				if (sendData(returnHost))
-				{
+				if (sendData(returnHost)) {
 					cout << timeNow() <<"  Ping Pong" << endl;
 				}
 
@@ -901,7 +870,7 @@ void IrcBot::quoteDelete(char *buf) {
     string temp_str = strs.str();
 	char char_type2[MAXDATASIZE];
     strcpy(char_type2, temp_str.c_str());
-    strcat(char_type2," Has been deleted.");
+    strcat(char_type2," has been deleted.");
     privMsg(char_type2);
 }
 
@@ -1013,19 +982,19 @@ void IrcBot::affectionDis(char *buf){
     if(charSearch(buf, "User1")){
         char* char_type = (char*) user->name.c_str();
         if(user->affeLvl <= -40){
-            strcpy(witty,"Get out of my sight. Never send me a message again.");
+            strcpy(witty,"Get out of my sight. Never send me math again.");
             privMsg(witty);
         }else if(user->affeLvl > -40 && user->affeLvl < -15){
-            strcpy(witty,"If you continue on this path...");
+            strcpy(witty,"If you continue calculating...");
             privMsg(witty);
         }else if(user->affeLvl >= -15 && user->affeLvl <= 15){
-            strcpy(witty,"Acquaintances are not so bad.");
+            strcpy(witty,"Calc acquaintances are not so bad.");
             privMsg(witty);
         }else if(user->affeLvl > 15 && user->affeLvl < 40){
-            strcpy(witty,"If you continue on this path... <3");
+            strcpy(witty,"If you continue calculating like this... <3");
             privMsg(witty);
         }else{
-            strcpy(witty,"I wuv you! <3 <3 <3");
+            strcpy(witty,"I luv you! <3.14159265358979323846264338327950288419716939937510");
             privMsg(witty);
         }
         //strcat adds a char string to another char string
@@ -1061,21 +1030,21 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<20){
             user->affeLvl += -2;
-            strcpy(witty,"Why are you hitting me?");
+            strcpy(witty,"Why are you punching my numbers so hard?");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
             }
         }else if(randomNum>95){
             user->affeLvl += 5;
-            strcpy(witty,"Mmmm that felt good");
+            strcpy(witty,"I like it when you punch my numbers like that.");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl = 50;
             }
         }else{
             user->affeLvl += -4;
-            strcpy(witty,"Want me to smack you see how that feels");
+            strcpy(witty,"I'll punch your button and you see how that feels.");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
@@ -1086,18 +1055,18 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<50){
             user->affeLvl += 0;
-            strcpy(witty,"What are you even touching?");
+            strcpy(witty,"Oh, what number are you pressing?");
             privMsg(witty);
         }else if(randomNum>75){
             user->affeLvl += 2;
-            strcpy(witty,"That feels wonderful");
+            strcpy(witty,"I like it when you press 5 like that");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl += 50;
             }
         }else{
             user->affeLvl += -1;
-            strcpy(witty,"Creep");
+            strcpy(witty,"Don't comb the operands like that. It's weird.");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
@@ -1108,18 +1077,18 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<80){
             user->affeLvl += 0;
-            strcpy(witty,"We're not getting anywhere here");
+            strcpy(witty,"We're not getting any calculations done here.");
             privMsg(witty);
         }else if(randomNum>95){
             user->affeLvl += 3;
-            strcpy(witty,"Watching you type that was oddly pleasing");
+            strcpy(witty,"Tan(pi/2)? So taboo.");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl = 50;
             }
         }else{
             user->affeLvl += -2;
-            strcpy(witty,"That was just sad");
+            strcpy(witty,"Really, \"math 2 + 2\"? That was just sad");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
@@ -1130,21 +1099,21 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<20){
             user->affeLvl += -2;
-            strcpy(witty,"Where are you touching?");
+            strcpy(witty,"Which button are you pressing?");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
             }
         }else if(randomNum>80){
             user->affeLvl += 2;
-            strcpy(witty,"Where are you touching?");
+            strcpy(witty,"Ew, take me out on a date before we multiply.");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl = 50;
             }
         }else{
             user->affeLvl = 0;
-            strcpy(witty,"Bored");
+            strcpy(witty,"Which number are you going to press next?");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
@@ -1155,21 +1124,21 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<40){
             user->affeLvl += -5;
-            strcpy(witty,"You're a...");
+            strcpy(witty,"\"math 1 / 0\"? Why are you doing this to me?");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
             }
         }else if(randomNum>98){
             user->affeLvl += 8;
-            strcpy(witty,"I want you more now");
+            strcpy(witty,"Enter! Enter!");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl = 50;
             }
         }else{
             user->affeLvl += -3;
-            strcpy(witty,"Why are you like this to me?");
+            strcpy(witty,"\"sqrt -1\". Owwie.");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
@@ -1180,21 +1149,21 @@ void IrcBot::affectionCom(char *buf){
         randomNum = rand() % 100 + 1;
         if(randomNum<60){
             user->affeLvl += -4;
-            strcpy(witty,"You're creeping me out.");
+            strcpy(witty,"You and your calculations are creeping me out.");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
             }
         }else if(randomNum>65){
             user->affeLvl += -6;
-            strcpy(witty,"You're creeping me out even more.");
+            strcpy(witty,"I kinda like you. You're good at math. ;-)");
             privMsg(witty);
             if(user->affeLvl <= -50){
                 user->affeLvl = -50;
             }
         }else{
             user->affeLvl += 1;
-            strcpy(witty,"Awwww your sorta cute in a weird, creepy way.");
+            strcpy(witty,"I can dig anyone who's into cosine.");
             privMsg(witty);
             if(user->affeLvl >= 50){
                 user->affeLvl = 50;
