@@ -34,7 +34,8 @@ using namespace std;
  * Postcondition:                                                                                 *
  * Initializes stuff that is needed to run the program                                            *
  **************************************************************************************************/
-IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr) {
+IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, const char *_usr) 
+{
 	root = new node;
 	root->next = NULL;
 	point = new affe;
@@ -60,7 +61,8 @@ IrcBot::IrcBot(const char *_nick, const char *_server, const char *_channel, con
  * Postcondition:                                                                *
  * Program quits out                                                             *
  ********************************************************************************/
-IrcBot::~IrcBot() {
+IrcBot::~IrcBot() 
+{
 	close (s);
 }
 
@@ -78,7 +80,8 @@ IrcBot::~IrcBot() {
  * Postcondition:                                                                *
  * Connects to server and waits for responses                                    *
  ********************************************************************************/
-void IrcBot::start() {
+void IrcBot::start() 
+{
 	struct addrinfo hints, *servinfo;
 
 	//Setup run with no errors
@@ -188,7 +191,8 @@ void IrcBot::start() {
  * Postcondition:                                                                *
  * Returns true if a match is found and false if a match is not found            *
  ********************************************************************************/
-bool IrcBot::charSearch(const char *toSearch, const char *searchFor) {
+bool IrcBot::charSearch(const char *toSearch, const char *searchFor) 
+{
 	int len = strlen(toSearch);
 	int forLen = strlen(searchFor); // The length of the searchfor field
 
@@ -226,7 +230,8 @@ bool IrcBot::charSearch(const char *toSearch, const char *searchFor) {
  * Postcondition:                                                                *
  * Returns true if a match is found and false if a match is not found            *
  ********************************************************************************/
-bool IrcBot::isConnected(const char *buf) {
+bool IrcBot::isConnected(const char *buf) 
+{
 	//returns true if "/MOTD" is found in the input strin
 	//If we find /MOTD then its ok join a channel
 	if (charSearch(buf,"/MOTD") == true)
@@ -248,7 +253,8 @@ bool IrcBot::isConnected(const char *buf) {
  * Postcondition:                                                                *
  * Returns true or false depending on if the MOTF is found                       *
  ********************************************************************************/
-const char * IrcBot::timeNow() {
+const char * IrcBot::timeNow() 
+{
 	//returns the current date and time
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -297,7 +303,8 @@ bool IrcBot::sendData(const char *msg)
  * Postcondition:                                                                *
  * A message will have now been sent to the IRC channel                          *
  ********************************************************************************/
-void IrcBot::sendPong(const char *buf) {
+void IrcBot::sendPong(const char *buf) 
+{
 	//Get the reply address
 	//loop through bug and find the location of PING
 	//Search through each char in toSearch
@@ -365,7 +372,8 @@ void IrcBot::sendPong(const char *buf) {
  * Postcondition:                                                                *
  * All commands available to the user will be printed out in chat       		 *
  ********************************************************************************/
-void IrcBot::botHelp() {
+void IrcBot::botHelp() 
+{
 	privMsg("Be sure to type the bot's name follow by a colon and space before each command. For example, to peform 2+2 if the bot's name was \"CoolBot\":");
 	privMsg("CoolBot: math 2 + 2");
 	privMsg("Available commands with examples:");
@@ -400,7 +408,8 @@ void IrcBot::botHelp() {
  * Postcondition:                                                                *
  * A calculation for the desired trig function will be printed out in chat       *
  ********************************************************************************/
-void IrcBot::botTrig(const char *buf) {
+void IrcBot::botTrig(const char *buf) 
+{
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
 	string trigfunct;
@@ -495,7 +504,8 @@ void IrcBot::botTrig(const char *buf) {
  * Postcondition:                                                                *
  * The calculation for the longest side of the triangle will be printed in chat  *
  ********************************************************************************/
-void IrcBot::botHypot(const char *buf) {
+void IrcBot::botHypot(const char *buf) 
+{
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
 	string num1str;
@@ -547,7 +557,8 @@ void IrcBot::botHypot(const char *buf) {
  * Postcondition:                                                                *
  * The zeros for the parabola will be printed out in chat				         *
  ********************************************************************************/
-void IrcBot::botQuadForm(const char *buf) {
+void IrcBot::botQuadForm(const char *buf) 
+{
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
 	string numAStr;
@@ -618,7 +629,8 @@ void IrcBot::botQuadForm(const char *buf) {
  * Postcondition:                                                                *
  * The square or cube root of the number will be printed out in chat	         *
  ********************************************************************************/
-void IrcBot::botRoot(const char *buf) {
+void IrcBot::botRoot(const char *buf) 
+{
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
 	string rootype;
@@ -678,7 +690,8 @@ void IrcBot::botRoot(const char *buf) {
  * Postcondition:                                                                *
  * The result of the two numbers and the operation will be printed out in chat   *
  ********************************************************************************/
-void IrcBot::botMath(const char *buf) {
+void IrcBot::botMath(const char *buf) 
+{
 	string bufstr(buf);
 	istringstream bufstream(bufstr);
 	string num1str;
@@ -766,7 +779,8 @@ void IrcBot::botMath(const char *buf) {
  * Postcondition:                                                                *
  * A quote is now added to the linked list at the last position available        *
  ********************************************************************************/
-void IrcBot::quoteAdd(char *buf) {
+void IrcBot::quoteAdd(char *buf) 
+{
     char hold[MAXDATASIZE];
     char data[MAXDATASIZE];
     node *star = root;
@@ -823,7 +837,8 @@ void IrcBot::quoteAdd(char *buf) {
  * Postcondition:                                                                *
  * The quote will be deleted at whatever value it was placed in at               *
  ********************************************************************************/
-void IrcBot::quoteDelete(char *buf) {
+void IrcBot::quoteDelete(char *buf) 
+{
     node *star = root;
     node *temp = root->next;
 	char message[MAXDATASIZE];
@@ -927,7 +942,8 @@ void IrcBot::quotePrintAll(char *buf){
  * Postcondition:                                                                *
  * A quote will be printed on screen                                             *
  ********************************************************************************/
-void IrcBot::quotePrint(char *buf){
+void IrcBot::quotePrint(char *buf)
+{
     node *star = root;
     int position;
     char message[MAXDATASIZE];
@@ -975,7 +991,8 @@ void IrcBot::quotePrint(char *buf){
  * Postcondition:                                                                *
  * User1 affection level will be posted in the channel                           *
  ********************************************************************************/
-void IrcBot::affectionDis(char *buf){
+void IrcBot::affectionDis(char *buf)
+{
     affe *user = point;
     char witty[MAXDATASIZE];
     //Tells you the bots affection level
@@ -1020,7 +1037,8 @@ void IrcBot::affectionDis(char *buf){
  * Postcondition:                                                                *
  * A response will be given and User1 affection level will change                *
  ********************************************************************************/
-void IrcBot::affectionCom(char *buf){
+void IrcBot::affectionCom(char *buf)
+{
     affe *user = point;
     int randomNum;
     char witty[MAXDATASIZE];
@@ -1318,7 +1336,8 @@ void IrcBot::botFramework(const char *buf)
  * Postcondition:                                                                *
  * Easily compiles the message to be sent to sendData                            *
  ********************************************************************************/
-void IrcBot::privMsg(const char *privmsg) {
+void IrcBot::privMsg(const char *privmsg)
+{
 	char msg[MAXDATASIZE] = {"PRIVMSG "};
 	strcat(msg, channel);
 	strcat(msg, " :");
